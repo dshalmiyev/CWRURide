@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/available_rides"
+            android:title="@string/ride_board" />
+        <item
+            android:id="@+id/available_requests"
+            android:title="@string/request_board" />
+        <item
+            android:id="@+id/my_trips"
+            android:title="@string/my_trips" />
+        <item
+            android:id="@+id/trip_history"
+            android:title="@string/trip_history" />
+        <item
+            android:id="@+id/buzzwords"
+            android:title="@string/buzzwords" />
+        <item
+            android:id="@+id/help"
+            android:title="@string/help" />
+    </group>
+
+</menu>

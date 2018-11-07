@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">CWRURide</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="driver">Driver</string>
+    <string name="passenger">Passenger</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_date_day">Day</string>
+    <string name="post_a_ride">Post a Ride</string>
+    <string name="description">Description</string>
+    <string name="ride_board">View Ride Board</string>
+    <string name="request_board">View Request Board</string>
+    <string name="my_trips">My Trips</string>
+    <string name="trip_history">Trip History</string>
+    <string name="buzzwords">Buzzwords</string>
+    <string name="help">Help</string>
+    <string name="post_this_ride">Post this ride?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="account_detals">Account Details</string>
+    <string name="login">Login</string>
+    <string name="edit_payment_options">Edit Payment Options</string>
+
+
+    <string-array name="timelist">
+        <item>0:00</item>
+        <item>0:30</item>
+        <item>1:00</item>
+        <item>1:30</item>
+        <item>2:00</item>
+        <item>2:30</item>
+        <item>3:00</item>
+        <item>3:30</item>
+        <item>4:00</item>
+        <item>4:30</item>
+        <item>5:00</item>
+        <item>5:30</item>
+        <item>6:00</item>
+        <item>6:30</item>
+        <item>7:00</item>
+        <item>7:30</item>
+        <item>8:00</item>
+        <item>8:30</item>
+        <item>9:00</item>
+        <item>9:30</item>
+        <item>10:00</item>
+        <item>10:30</item>
+        <item>11:00</item>
+        <item>11:30</item>
+        <item>12:00</item>
+        <item>12:30</item>
+    </string-array>
+
+</resources>
