@@ -19,8 +19,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class PostRide extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
 
@@ -101,10 +102,18 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 });
 
                 Button button1 = (Button) dialog.findViewById(R.id.Confirm);
-                button.setOnClickListener(new View.OnClickListener() {
+                button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //write to SQL
+                        //Testing checks
+
+                        //SQL connection
+                        /*Connection SQLConnect = null;
+                        SQLConnect = RemoteConnection.getRemoteConnection();
+                        if(SQLConnect == null) {
+                            Toast.makeText(PostRide.this,"You lost again",Toast.LENGTH_SHORT).show();
+                        }
+                        */
                     }
                 });
 
@@ -119,23 +128,23 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
             public void onClick(View v) {
                 Pass_Drive = false;
 
+                //Create Dialog
                 final Dialog dialog = new Dialog(PostRide.this);
                 dialog.setContentView(R.layout.fragment_confirm_dialog);
 
-                // set up the text boxes
-                //Description text
+                //Dialog Description text
                 TextView text = (TextView) dialog.findViewById(R.id.textView2);
                 text.setText(descriptionBox.getText().toString());
 
-                //Date text
+                //Dialog Date text
                 TextView text2 = (TextView) dialog.findViewById(R.id.textView3);
                 text2.setText(editTextFromDate.getEditableText().toString());
 
-                //Time text
+                //Dialog Time text
                 TextView text3 = (TextView) dialog.findViewById(R.id.textView4);
                 text3.setText(editTextFromTime.getEditableText().toString());
 
-                //Cost text
+                //Dialog Cost text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
                 if (Pass_Drive == false) {
                     text4.setText("Cost = OVER 9000!");
@@ -149,20 +158,25 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        System.out.println("ASs");
                         dialog.dismiss();
                     }
                 });
 
                 Button button1 = (Button) dialog.findViewById(R.id.Confirm);
-                button.setOnClickListener(new View.OnClickListener() {
+                button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //write to SQL
+                        Connection SQLConnect = RemoteConnection.getRemoteConnection();
+                        if(SQLConnect == null) {
+                            System.out.println("Fuck you");
+                        }
                     }
                 });
 
                 //Show Dialog
                 dialog.show();
+
             }
         });
     }

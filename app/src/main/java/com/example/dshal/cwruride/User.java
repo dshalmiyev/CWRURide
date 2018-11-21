@@ -58,9 +58,9 @@ public class User {
         //check for time overlaps
         for(Ride currentRide : userRides){
             if(currentRide.dateIsEqual(day,month,year)){
-                if(currentRide.getTimeStart() > timeStart && currentRide.getTimeStart() < maxDriveEnd)
+                if(currentRide.getStartTime() > timeStart && currentRide.getStartTime() < maxDriveEnd)
                     return "time mismatch";
-                if(currentRide.getTimeEnd() > timeStart && currentRide.getTimeEnd() < maxDriveEnd)
+                if(currentRide.getEndTime() > timeStart && currentRide.getEndTime() < maxDriveEnd)
                     return "time mismatch";
             }
         }

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="*"
+    tools:context=".RideBoard">
+
+    <Button
+        android:id="@+id/previousPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Previous"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/postARide"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/postARide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:text="Post a Ride"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextPage" />
+
+    <Button
+        android:id="@+id/nextPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:id="@+id/ride_board_row1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/ride_time"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Time" />
+
+            <TextView
+                android:id="@+id/user_rating"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride-description1"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/start_time1"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating1"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description2"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date2"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time2"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating2"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description3"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date3"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time3"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating3"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description4"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date4"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time4"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating4"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description5"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date5"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time5"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating5"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description6"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date6"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time6"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating6"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description7"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date7"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time7"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating7"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description8"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date8"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time8"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating8"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row10"
+            android:layout_width="wrap_content"
+            android:layout_height="136dp"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description9"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date9"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time9"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating9"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/ride_board_row11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minHeight="40dp"
+            android:onClick="myTableRowClickHandler">
+
+            <TextView
+                android:id="@+id/ride_description10"
+                android:layout_width="171dp"
+                android:layout_height="wrap_content"
+                android:text="@string/description" />
+
+            <TextView
+                android:id="@+id/ride_date10"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/start_time10"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:text="Driver" />
+
+            <TextView
+                android:id="@+id/user_rating10"
+                android:layout_width="67dp"
+                android:layout_height="wrap_content"
+                android:text="Rating" />
+        </TableRow>
+
+    </TableLayout>
+
+</android.support.constraint.ConstraintLayout>
