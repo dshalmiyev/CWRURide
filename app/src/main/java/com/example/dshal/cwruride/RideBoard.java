@@ -296,7 +296,7 @@ public class RideBoard extends AppCompatActivity {
         Creates dialogue box to be opened on click
         Sets text values based on the input ride
      */
-    public void openDialogue(Ride ride) {
+    public void openDialogue(final Ride ride) {
         final Dialog dialog = new Dialog(RideBoard.this);
         dialog.setContentView(R.layout.dialog2);
 
@@ -332,22 +332,63 @@ public class RideBoard extends AppCompatActivity {
         });
 
         //Button to accept a ride and send information to the database
-        Button button1 = (Button) dialog.findViewById(R.id.Confirm);
-        if(MainActivity.boardNumber == 2)
-            button1.setText("Start Ride");
+        final Button button1 = (Button) dialog.findViewById(R.id.Confirm);
+        if (MainActivity.boardNumber == 2) {
+            if (currentRide.getStart())
+                button1.setText("End Ride");
+            else
+                button1.setText("Start Ride");
+        }
         else
             button1.setText("Confirm");
+
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainActivity.boardNumber == 2) {
+                switch(MainActivity.boardNumber) {
+                    case 0:
+                        //write to SQL
+                        break;
+                    case 1:
+                        //write to sql
+                    case 2:
+                        if (currentRide.getStart()) {
+                            currentRide.setEnd(true);
+                            reviewDialogue();
+                            dialog.dismiss();
+                            /*MAKE NEW THINGIE MICHAEL*/
+                        } else {
+                            currentRide.setStart(true);
+                            button1.setText("End Ride");
+                            dialog.dismiss();
+                        }
 
+                        break;
+                    case 3:
+                        //
+                        break;
                 }
             }
         });
 
         //Show Dialog
         dialog.show();
+    }
+    public void reviewDialogue(){
+        final Dialog dialog2 = new Dialog(RideBoard.this);
+        dialog2.setContentView(R.layout.review_layout);
+
+        final Button button2 = dialog2.findViewById(R.id.review_confirm);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog2.dismiss();
+            }
+
+        });
+
+        dialog2.show();
+
     }
 }

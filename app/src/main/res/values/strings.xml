@@ -19,6 +19,7 @@
     <string name="account_detals">Account Details</string>
     <string name="login">Login</string>
     <string name="edit_payment_options">Edit Payment Options</string>
+    <string name="car_info_label">Car Information</string>
 
 
     <string-array name="timelist">

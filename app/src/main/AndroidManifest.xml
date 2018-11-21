@@ -45,7 +45,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".PostRide" />
-        <activity android:name=".RideBoard"></activity>
+        <activity android:name=".RideBoard" />
+        <activity android:name=".AccountDetails" />
+        <activity android:name=".Buzzwords" />
+        <activity android:name=".Help"></activity>
     </application>
 
 </manifest>

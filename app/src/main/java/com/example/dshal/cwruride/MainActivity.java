@@ -1,11 +1,14 @@
 package com.example.dshal.cwruride;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
     public static int boardNumber;
+    public static User testUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(Gravity.START);
                         return true;
                     case R.id.buzzwords:
-                        Intent buzzwords = new Intent(getApplicationContext(), RideBoard.class);
+                        Intent buzzwords = new Intent(getApplicationContext(), Buzzwords.class);
                         startActivity(buzzwords);
                         drawerLayout.closeDrawer(Gravity.START);
                         return true;
                     case R.id.help:
-                        Intent help = new Intent(getApplicationContext(), RideBoard.class);
+                        Intent help = new Intent(getApplicationContext(), Help.class);
                         startActivity(help);
                         drawerLayout.closeDrawer(Gravity.START);
                         return true;
@@ -77,5 +81,26 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.drawer_view2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.login:
+                Intent postRide = new Intent(getApplicationContext(), PostRide.class);
+                //startActivity(postRide);
+                return true;
+            case R.id.account_details:
+                Intent accountDetails = new Intent(getApplicationContext(), AccountDetails.class);
+                startActivity(accountDetails);
+        }
+        return false;
     }
 }

@@ -7,8 +7,9 @@ public class FieldChecking {
             return false;
         String hours = input.substring(0,input.indexOf(":"));
         String minutes = input.substring(input.indexOf(":")+1,input.indexOf(":")+3);
-        String ampm = input.substring(input.indexOf(":"+3));
+        String ampm = input.substring(input.indexOf(":")+3);
         int numHours, numMinutes;
+        ampm = ampm.toLowerCase();
         try{
             numHours = Integer.parseInt(hours);
             numMinutes = Integer.parseInt(minutes);
@@ -32,7 +33,7 @@ public class FieldChecking {
         }
         String month = input.substring(0,firstSlash);
         String day = input.substring(firstSlash+1, secondSlash);
-        String year = input.substring(secondSlash+1, input.length());
+        String year = input.substring(secondSlash+1);
         int numMonth, numDay, numYear;
         try {
             numDay = Integer.parseInt(day);

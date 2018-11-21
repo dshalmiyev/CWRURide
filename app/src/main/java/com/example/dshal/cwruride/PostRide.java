@@ -148,7 +148,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         passenger.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if (!FieldChecking.checkTime(editTextFromTime.getEditableText().toString())) {
-                    errorText.setText("Time Format Error");
+                    String check = "time format error" + editTextFromTime.getEditableText().toString();
+                    errorText.setText(check);
                     errorText.setVisibility(View.VISIBLE);
                     return;
                 }
