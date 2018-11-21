@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent postRide = new Intent(getApplicationContext(), RideBoard.class);
+                Intent postRide = new Intent(getApplicationContext(), PostRide.class);
                 startActivity(postRide);
             }
         });

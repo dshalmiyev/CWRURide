@@ -19,6 +19,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -61,10 +64,30 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         final EditText editTextFromTime = (EditText) findViewById(R.id.editText4);
         setTime fromTime = new setTime(editTextFromTime, this);
 
+        //Error textView
+        final TextView errorText = (TextView) findViewById(R.id.errorText);
+        errorText.setVisibility(View.INVISIBLE);
+
         //Driver Button
         Button driver = (Button)findViewById(R.id.driver);
         driver.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (!FieldChecking.checkTime(editTextFromTime.getEditableText().toString())) {
+                    String problems = "Time Format Error "+editTextFromTime.getEditableText().toString();
+                    errorText.setText(problems);
+                    errorText.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                else if (!FieldChecking.checkDate(editTextFromDate.getEditableText().toString())) {
+                    errorText.setText("Date Format Error");
+                    errorText.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                else
+                    errorText.setVisibility(View.INVISIBLE);
+
                 Pass_Drive = true;
 
                 final Dialog dialog = new Dialog(PostRide.this);
@@ -105,8 +128,6 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Testing checks
-
                         //SQL connection
                         /*Connection SQLConnect = null;
                         SQLConnect = RemoteConnection.getRemoteConnection();
@@ -126,6 +147,21 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         Button passenger = (Button)findViewById(R.id.passenger);
         passenger.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                if (!FieldChecking.checkTime(editTextFromTime.getEditableText().toString())) {
+                    errorText.setText("Time Format Error");
+                    errorText.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                else if (!FieldChecking.checkDate(editTextFromDate.getEditableText().toString())) {
+                    errorText.setText("Date Format Error");
+                    errorText.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                else
+                    errorText.setVisibility(View.INVISIBLE);
+
                 Pass_Drive = false;
 
                 //Create Dialog
@@ -158,7 +194,6 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("ASs");
                         dialog.dismiss();
                     }
                 });
@@ -167,10 +202,12 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Connection SQLConnect = RemoteConnection.getRemoteConnection();
+                        /*Connection SQLConnect = null;
+                        SQLConnect = RemoteConnection.getRemoteConnection();
                         if(SQLConnect == null) {
-                            System.out.println("Fuck you");
+                            Toast.makeText(PostRide.this,"You lost again",Toast.LENGTH_SHORT).show();
                         }
+                        */
                     }
                 });
 

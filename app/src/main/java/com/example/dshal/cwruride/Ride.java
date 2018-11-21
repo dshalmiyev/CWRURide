@@ -9,6 +9,8 @@ public class Ride {
     private String complementaryUserID;
     private String description;
     private String date;
+    private boolean started;
+    private boolean ended;
 
     public Ride(int rideID, String tableName){
         if(tableName.equals("Testing")) {
@@ -52,5 +54,18 @@ public class Ride {
     public int calculateCost(){
         return 0;//everything is free rn buy one get them all
         //Is this passed from google maps api?
+    }
+    public boolean getStart() {
+        return started;
+    }
+    public boolean getEnded() {
+        return ended;
+    }
+
+    public void setStart(boolean input) {
+        started = input;
+    }
+    public void setEnd(boolean input) {
+        ended = input;
     }
 }

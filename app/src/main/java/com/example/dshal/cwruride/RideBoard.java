@@ -9,13 +9,25 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 
 public class RideBoard extends AppCompatActivity {
+    //ArrayList to store viewable rides
     public ArrayList<Ride> shownRides;
+    //int that changes what rides are viewable
     int pageCount = 0;
+    //For Testing
     boolean testingValues = true;
+    //Keep track of current ride (for indexing)
+    Ride currentRide;
 
+    /*Creates all activities with tables to view and select already posted rides
+        Creates initial viewable rides in shownRides
+        Creates table to store and view the rides
+        Creates buttons to increment and decrement pageCount with next, previous
+        Creates button to bring user to PostRide activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +36,7 @@ public class RideBoard extends AppCompatActivity {
         setTableValues();
         TableRow TableRow1 = (TableRow) findViewById(R.id.ride_board_row1);
 
+        //Brings the user to the PostRide activity
         Button post2 = (Button) findViewById(R.id.postARide);
         post2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +46,7 @@ public class RideBoard extends AppCompatActivity {
             }
         });
 
+        //Increments pageCount
         Button next = (Button) findViewById(R.id.nextPage);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +57,7 @@ public class RideBoard extends AppCompatActivity {
             }
         });
 
+        //Decrements pageCount
         Button previous = (Button) findViewById(R.id.previousPage);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +72,11 @@ public class RideBoard extends AppCompatActivity {
 
     }
 
+    /*
+        Takes an input of type int and returns an ArrayList
+        Selection is based on boardNumber which is the type of board that will be viewed
+        adds rides to shownRides based on board type
+     */
     public ArrayList<Ride> getRideSet(int pageNumber) {
         switch (MainActivity.boardNumber) {
             case 0:
@@ -100,68 +120,89 @@ public class RideBoard extends AppCompatActivity {
             return hardCoded;
         }
         return null;
-        //This is where we implement the correct SQL stuff
     }
+
+    /*
+        Takes input of type View and returns nothing
+        Opens a dialogue based on the table row selected
+     */
 
     public void myTableRowClickHandler(View view) {
         switch (view.getId()) {
             case R.id.ride_board_row2:
                 if(shownRides.get(0).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(0);
                 openDialogue(shownRides.get(0));
                 break;
             case R.id.ride_board_row3:
                 if(shownRides.get(1).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(1);
                 openDialogue(shownRides.get(1));
                 break;
             case R.id.ride_board_row4:
                 if(shownRides.get(2).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(2);
                 openDialogue(shownRides.get(2));
                 break;
             case R.id.ride_board_row5:
                 if(shownRides.get(3).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(3);
                 openDialogue(shownRides.get(3));
                 break;
             case R.id.ride_board_row6:
                 if(shownRides.get(4).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(4);
                 openDialogue(shownRides.get(4));
                 break;
             case R.id.ride_board_row7:
                 if(shownRides.get(5).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(5);
                 openDialogue(shownRides.get(5));
                 break;
             case R.id.ride_board_row8:
                 if(shownRides.get(6).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(6);
                 openDialogue(shownRides.get(6));
                 break;
             case R.id.ride_board_row9:
                 if(shownRides.get(7).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(7);
                 openDialogue(shownRides.get(7));
                 break;
             case R.id.ride_board_row10:
                 if(shownRides.get(8).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(8);
                 openDialogue(shownRides.get(8));
                 break;
             case R.id.ride_board_row11:
                 if(shownRides.get(9).getDescription().equals("No Ride"))
                     break; //If null Ride
+                currentRide = shownRides.get(9);
                 openDialogue(shownRides.get(9));
                 break;
         }
     }
 
+    /*
+        Takes no inputs and returns nothing
+        Replaces values in the table
+        Values are taken from shownRides
+        if the shownRides array has less than 10 Rides inserts null rides with no information
+     */
     public void setTableValues() {
         while (shownRides.size() < 10)
             shownRides.add(new Ride(13, "empty"));
 
+        //Sets the times in the table
         TextView time1 = (TextView) findViewById(R.id.start_time1);
         time1.setText(Integer.toString(shownRides.get(0).getStartTime()));
         TextView time2 = (TextView) findViewById(R.id.start_time2);
@@ -183,6 +224,7 @@ public class RideBoard extends AppCompatActivity {
         TextView time10 = (TextView) findViewById(R.id.start_time10);
         time10.setText(Integer.toString(shownRides.get(9).getStartTime()));
 
+        //Sets the dates in the table
         TextView date1 = (TextView) findViewById(R.id.ride_date1);
         date1.setText(shownRides.get(0).getDate());
         TextView date2 = (TextView) findViewById(R.id.ride_date2);
@@ -204,6 +246,7 @@ public class RideBoard extends AppCompatActivity {
         TextView date10 = (TextView) findViewById(R.id.ride_date10);
         date10.setText(shownRides.get(9).getDate());
 
+        //Sets the descriptions in the table
         TextView description1 = (TextView) findViewById(R.id.ride_description1);
         description1.setText(shownRides.get(0).getDescription());
         TextView description2 = (TextView) findViewById(R.id.ride_description2);
@@ -225,6 +268,7 @@ public class RideBoard extends AppCompatActivity {
         TextView description10 = (TextView) findViewById(R.id.ride_description10);
         description10.setText(shownRides.get(9).getDescription());
 
+        //Sets the user ratings in the table
         TextView userRating1 = (TextView) findViewById(R.id.user_rating1);
         userRating1.setText(Integer.toString(shownRides.get(0).getUserRating()));
         TextView userRating2 = (TextView) findViewById(R.id.user_rating2);
@@ -247,6 +291,11 @@ public class RideBoard extends AppCompatActivity {
         userRating10.setText(Integer.toString(shownRides.get(9).getUserRating()));
     }
 
+    /*
+        Takes an input of type ride and returns nothing
+        Creates dialogue box to be opened on click
+        Sets text values based on the input ride
+     */
     public void openDialogue(Ride ride) {
         final Dialog dialog = new Dialog(RideBoard.this);
         dialog.setContentView(R.layout.dialog2);
@@ -272,7 +321,8 @@ public class RideBoard extends AppCompatActivity {
         TextView text5 = (TextView) dialog.findViewById(R.id.textView6);
         text5.setText(ride.getComplementaryUserID());
 
-        // set up the buttons
+        //set up Buttons
+        //Button to close open dialogue
         Button button = (Button) dialog.findViewById(R.id.Cancel);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,11 +331,19 @@ public class RideBoard extends AppCompatActivity {
             }
         });
 
+        //Button to accept a ride and send information to the database
         Button button1 = (Button) dialog.findViewById(R.id.Confirm);
+        if(MainActivity.boardNumber == 2)
+            button1.setText("Start Ride");
+        else
+            button1.setText("Confirm");
+
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //write to SQL
+                if(MainActivity.boardNumber == 2) {
+
+                }
             }
         });
 
