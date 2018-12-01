@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RemoteConnection.getRemoteConnection();
                 Intent postRide = new Intent(getApplicationContext(), PostRide.class);
                 startActivity(postRide);
             }

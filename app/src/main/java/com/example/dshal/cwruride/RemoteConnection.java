@@ -7,9 +7,15 @@ import java.sql.SQLException;
 public class RemoteConnection {
     public static Connection getRemoteConnection() {
         Connection con;
+        String ip = "129.22.23.215";
+        String port = "1433";
+        String db = "CWRURide";
+        String un = "CWRURide";
+        String pass = "EuIv2!#3XGe&";
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://dshalmiyevdb.c6dnsienqpqh.us-east-1.rds.amazonaws.com/dshalmiyevdb","dshalmiyev","Sdidag#15");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            con = DriverManager.getConnection("jdbc:sqlserver://" + ip + ":" + port + ";" + "databaseName=" + db + ";user=" + un + ";password=" + pass + ";");
             return con;
         }
         catch (ClassNotFoundException e) {
