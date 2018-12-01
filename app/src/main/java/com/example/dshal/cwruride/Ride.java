@@ -1,38 +1,64 @@
 package com.example.dshal.cwruride;
 
 public class Ride {
-    private int startTime;
-    private int endTime;
-    private int driveLength;
+    private int rideID;
+    private String startTime;
+    private double driveLength;
     private int cost;
-    private int userRating;
-    private String complementaryUserID;
+    private double userRating;
+    private int PassengerUserID;
+    private int DriverUserID;
+    private String passengerName;
+    private String driverName;
     private String description;
+    private String startLocation;
+    private String endLocation;
+
     private String date;
     private boolean started;
     private boolean ended;
-
-    public Ride(int rideID, String tableName){
-        if(tableName.equals("Testing")) {
-            startTime = rideID;
-            endTime = rideID + 2*rideID;
+    //Ride storeRide = new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
+      //      rs.getString("driver_name"), rs.getString("passenger_name"), rs.getDate("rides_time"), rs.getDouble("rating"), rs.getInt("rides_start_status") == 1
+    // ,rs.getInt("rides_end_status") == 1, rs.getBoolean("rides_end_status")rs.getString("start_location"), rs.getString("end_location"),
+        //    rs.getString("description"));
+    public Ride(int rideSQLID, int driverID, int passengerID, String drivName, String passName, String time, String rideDate, double drive, double rating, boolean rideStarted, boolean rideEnded, String startLocal, String endLocal, String descrip,  String nullEvaluator){
+        if(nullEvaluator.equals("Testing")) {
+            startTime = rideID + "";
             driveLength = 2*rideID;
             cost = 3*rideID;
-            complementaryUserID = rideID*5 + "";
+            PassengerUserID = rideID*5 ;
+            DriverUserID = rideID*5 ;
+            passengerName = "Michael";
+            driverName = "Silverman";
             userRating = 3;
             description = "description" + startTime;
             date = startTime + "/" + driveLength + "/" + cost;
         }
-        if(tableName.equals("empty")){
-            startTime = 0;
-            endTime = 0;
+        if(nullEvaluator.equals("empty")){
+            startTime = 0 + "";
             driveLength = 0;
             cost = 0;
-            complementaryUserID = 0 + "";
+            PassengerUserID = 0 ;
+            DriverUserID = 0 ;
+            passengerName = "No User";
+            driverName = "No User";
             userRating = 0;
             description = "No Ride";
             date = "No Date";
         }
+        else{
+            rideID = rideSQLID;
+            DriverUserID = driverID;
+            PassengerUserID = passengerID;
+            startTime = time;
+            driveLength = drive;
+            cost = calculateCost(driveLength);
+            userRating = rating;
+            description = descrip;
+            date = rideDate;
+
+        }
+
 
     }
 
@@ -40,18 +66,20 @@ public class Ride {
     public boolean dateIsEqual(int day, int month, int year){
         return true;
     }
-    public int getStartTime(){
+    public String getStartTime(){
         return startTime;
     }
-    public int getUserRating(){ return userRating;}
-    public int getEndTime(){
-        return endTime;
-    }
+    public double getUserRating(){ return userRating;}
+
     public String getDescription(){ return description; }
     public String getDate(){return date;}
     public int getCost(){return cost;}
-    public String getComplementaryUserID(){return complementaryUserID;}
-    public int calculateCost(){
+    public int getPassengerUserID(){return PassengerUserID;}
+    public int getDriverUserID(){return DriverUserID;}
+    public String getPassengerName(){ return passengerName;}
+    public String getDriverName(){ return driverName;}
+
+    public int calculateCost( double driveLen){
         return 0;//everything is free rn buy one get them all
         //Is this passed from google maps api?
     }
