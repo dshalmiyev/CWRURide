@@ -10,6 +10,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class RideBoard extends AppCompatActivity {
@@ -81,6 +84,20 @@ public class RideBoard extends AppCompatActivity {
         switch (MainActivity.boardNumber) {
             case 0:
                 //SQL get method for available rides
+                ResultSet rs = new RemoteConnection().getRides(pageNumber*10);
+                ArrayList<Ride> results = new ArrayList<Ride>();
+                try {
+                    while (rs.next()) {
+                        results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), rs.getDouble("drive_length"),
+                                rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
+                                rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
+                    }
+                    return results;
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 1:
                 //SQL get method for available requests
@@ -93,6 +110,7 @@ public class RideBoard extends AppCompatActivity {
                 break;
         }
 
+        /*
         if (testingValues) {
             ArrayList<Ride> hardCoded = new ArrayList<Ride>(10);
             if (pageNumber == 0) {
@@ -119,6 +137,7 @@ public class RideBoard extends AppCompatActivity {
             }
             return hardCoded;
         }
+        */
         return null;
     }
 
@@ -200,29 +219,29 @@ public class RideBoard extends AppCompatActivity {
      */
     public void setTableValues() {
         while (shownRides.size() < 10)
-            shownRides.add(new Ride(13, "empty"));
+            shownRides.add(new Ride(1,2,3,"An","Sm","1:00","11/11/11",1.50,4.2,false,false,"ugly","costco","fun time with friendcake", "empty"));
 
         //Sets the times in the table
         TextView time1 = (TextView) findViewById(R.id.start_time1);
-        time1.setText(Integer.toString(shownRides.get(0).getStartTime()));
+        time1.setText(shownRides.get(0).getStartTime());
         TextView time2 = (TextView) findViewById(R.id.start_time2);
-        time2.setText(Integer.toString(shownRides.get(1).getStartTime()));
+        time2.setText(shownRides.get(1).getStartTime());
         TextView time3 = (TextView) findViewById(R.id.start_time3);
-        time3.setText(Integer.toString(shownRides.get(2).getStartTime()));
+        time3.setText(shownRides.get(2).getStartTime());
         TextView time4 = (TextView) findViewById(R.id.start_time4);
-        time4.setText(Integer.toString(shownRides.get(3).getStartTime()));
+        time4.setText(shownRides.get(3).getStartTime());
         TextView time5 = (TextView) findViewById(R.id.start_time5);
-        time5.setText(Integer.toString(shownRides.get(4).getStartTime()));
+        time5.setText(shownRides.get(4).getStartTime());
         TextView time6 = (TextView) findViewById(R.id.start_time6);
-        time6.setText(Integer.toString(shownRides.get(5).getStartTime()));
+        time6.setText(shownRides.get(5).getStartTime());
         TextView time7 = (TextView) findViewById(R.id.start_time7);
-        time7.setText(Integer.toString(shownRides.get(6).getStartTime()));
+        time7.setText(shownRides.get(6).getStartTime());
         TextView time8 = (TextView) findViewById(R.id.start_time8);
-        time8.setText(Integer.toString(shownRides.get(7).getStartTime()));
+        time8.setText(shownRides.get(7).getStartTime());
         TextView time9 = (TextView) findViewById(R.id.start_time9);
-        time9.setText(Integer.toString(shownRides.get(8).getStartTime()));
+        time9.setText(shownRides.get(8).getStartTime());
         TextView time10 = (TextView) findViewById(R.id.start_time10);
-        time10.setText(Integer.toString(shownRides.get(9).getStartTime()));
+        time10.setText(shownRides.get(9).getStartTime());
 
         //Sets the dates in the table
         TextView date1 = (TextView) findViewById(R.id.ride_date1);
@@ -270,25 +289,25 @@ public class RideBoard extends AppCompatActivity {
 
         //Sets the user ratings in the table
         TextView userRating1 = (TextView) findViewById(R.id.user_rating1);
-        userRating1.setText(Integer.toString(shownRides.get(0).getUserRating()));
+        userRating1.setText(String.valueOf(shownRides.get(0).getUserRating()));
         TextView userRating2 = (TextView) findViewById(R.id.user_rating2);
-        userRating2.setText(Integer.toString(shownRides.get(1).getUserRating()));
+        userRating2.setText(String.valueOf(shownRides.get(1).getUserRating()));
         TextView userRating3 = (TextView) findViewById(R.id.user_rating3);
-        userRating3.setText(Integer.toString(shownRides.get(2).getUserRating()));
+        userRating3.setText(String.valueOf(shownRides.get(2).getUserRating()));
         TextView userRating4 = (TextView) findViewById(R.id.user_rating4);
-        userRating4.setText(Integer.toString(shownRides.get(3).getUserRating()));
+        userRating4.setText(String.valueOf(shownRides.get(3).getUserRating()));
         TextView userRating5 = (TextView) findViewById(R.id.user_rating5);
-        userRating5.setText(Integer.toString(shownRides.get(4).getUserRating()));
+        userRating5.setText(String.valueOf(shownRides.get(4).getUserRating()));
         TextView userRating6 = (TextView) findViewById(R.id.user_rating6);
-        userRating6.setText(Integer.toString(shownRides.get(5).getUserRating()));
+        userRating6.setText(String.valueOf(shownRides.get(5).getUserRating()));
         TextView userRating7 = (TextView) findViewById(R.id.user_rating7);
-        userRating7.setText(Integer.toString(shownRides.get(6).getUserRating()));
+        userRating7.setText(String.valueOf(shownRides.get(6).getUserRating()));
         TextView userRating8 = (TextView) findViewById(R.id.user_rating8);
-        userRating8.setText(Integer.toString(shownRides.get(7).getUserRating()));
+        userRating8.setText(String.valueOf(shownRides.get(7).getUserRating()));
         TextView userRating9 = (TextView) findViewById(R.id.user_rating9);
-        userRating9.setText(Integer.toString(shownRides.get(8).getUserRating()));
+        userRating9.setText(String.valueOf(shownRides.get(8).getUserRating()));
         TextView userRating10 = (TextView) findViewById(R.id.user_rating10);
-        userRating10.setText(Integer.toString(shownRides.get(9).getUserRating()));
+        userRating10.setText(String.valueOf(shownRides.get(9).getUserRating()));
     }
 
     /*
@@ -311,7 +330,7 @@ public class RideBoard extends AppCompatActivity {
 
         //Time text
         TextView text3 = (TextView) dialog.findViewById(R.id.textView4);
-        text3.setText(Integer.toString(ride.getStartTime()));
+        text3.setText(ride.getStartTime());
 
         //Earnings text
         TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
@@ -319,7 +338,11 @@ public class RideBoard extends AppCompatActivity {
 
         //User id text
         TextView text5 = (TextView) dialog.findViewById(R.id.textView6);
-        text5.setText(ride.getComplementaryUserID());
+        if(ride.getPassengerUserID() == 0){
+            text5.setText(ride.getDriverName());
+        }
+        else
+            text5.setText(ride.getPassengerName());
 
         //set up Buttons
         //Button to close open dialogue

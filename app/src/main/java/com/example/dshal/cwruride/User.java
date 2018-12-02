@@ -47,9 +47,11 @@ public class User {
             //for (int i = 0; i < rideCount; i++) {
                 //userRides.add(new Ride(i, X));
             //}
+            /*
             userRides.add(new Ride(0, "Testing"));
             userRides.add(new Ride(1,"Testing"));
             userRides.add(new Ride(6,"Testing"));
+            */
 
 
             carYear = 2014; //SQL User Database
@@ -59,6 +61,7 @@ public class User {
             userLicense = "To Kill"; //SQL User Database
         }
     }
+    /*
     public String verifyRide(int day, int month, int year,int timeStart,int timeRange, int maxDriveEnd,boolean isDriving){
         if(isDriving && !canDrive())
             return "unable to drive";
@@ -74,6 +77,8 @@ public class User {
 
         return "can post";
     }
+    */
+
     public boolean canDrive(){
         if(ccInfo == 0 || ppInfo == 0 || vmInfo == 0 || carYear == 0 || carMake.equals("")|| carModel.equals("")||carPlate.equals("")||userLicense.equals(""))
             return false;

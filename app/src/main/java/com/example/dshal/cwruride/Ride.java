@@ -18,9 +18,9 @@ public class Ride {
     private boolean started;
     private boolean ended;
     //Ride storeRide = new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
-      //      rs.getString("driver_name"), rs.getString("passenger_name"), rs.getDate("rides_time"), rs.getDouble("rating"), rs.getInt("rides_start_status") == 1
+    //      rs.getString("driver_name"), rs.getString("passenger_name"), rs.getDate("rides_time"), rs.getDouble("rating"), rs.getInt("rides_start_status") == 1
     // ,rs.getInt("rides_end_status") == 1, rs.getBoolean("rides_end_status")rs.getString("start_location"), rs.getString("end_location"),
-        //    rs.getString("description"));
+    //    rs.getString("description"));
     public Ride(int rideSQLID, int driverID, int passengerID, String drivName, String passName, String time, String rideDate, double drive, double rating, boolean rideStarted, boolean rideEnded, String startLocal, String endLocal, String descrip,  String nullEvaluator){
         if(nullEvaluator.equals("Testing")) {
             startTime = rideID + "";
