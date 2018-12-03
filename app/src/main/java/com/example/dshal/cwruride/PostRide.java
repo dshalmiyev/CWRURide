@@ -128,10 +128,10 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 //Earnings text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
                 if (Pass_Drive == true) {
-                    text4.setText("Cost = OVER 9000!");
+                    text4.setText("$14.00");
                 }
                 else {
-                    text4.setText("Earnings = OVER 9000!");
+                    text4.setText("$14.00");
                 }
 
                 // set up the buttons
@@ -150,6 +150,7 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                         new RemoteConnection().addRide(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
                                 editTextFromDate.getEditableText().toString(), driveLength.getSelectedItem().toString(),MainActivity.testUser.getFeedbackValue(),0,0,
                                 pickup.getEditableText().toString(),destination.getEditableText().toString(),descriptionBox.getEditableText().toString());
+                        System.out.println("You made it this far. congratz");
                     }
                 });
 

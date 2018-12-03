@@ -23,6 +23,7 @@ public class Ride {
     //    rs.getString("description"));
     public Ride(int rideSQLID, int driverID, int passengerID, String drivName, String passName, String time, String rideDate, double drive, double rating, boolean rideStarted, boolean rideEnded, String startLocal, String endLocal, String descrip,  String nullEvaluator){
         if(nullEvaluator.equals("Testing")) {
+            rideID=rideSQLID;
             startTime = rideID + "";
             driveLength = 2*rideID;
             cost = 3*rideID;
@@ -34,7 +35,7 @@ public class Ride {
             description = "description" + startTime;
             date = startTime + "/" + driveLength + "/" + cost;
         }
-        if(nullEvaluator.equals("empty")){
+        else if(nullEvaluator.equals("empty")){
             startTime = 0 + "";
             driveLength = 0;
             cost = 0;
@@ -50,6 +51,8 @@ public class Ride {
             rideID = rideSQLID;
             DriverUserID = driverID;
             PassengerUserID = passengerID;
+            driverName = drivName;
+            passengerName = passName;
             startTime = time;
             driveLength = drive;
             cost = calculateCost(driveLength);
@@ -76,6 +79,7 @@ public class Ride {
     public int getDriverUserID(){return DriverUserID;}
     public String getPassengerName(){ return passengerName;}
     public String getDriverName(){ return driverName;}
+    public Integer getRideId() {return rideID; }
 
     public int calculateCost( double driveLen){
         return 0;//everything is free rn buy one get them all

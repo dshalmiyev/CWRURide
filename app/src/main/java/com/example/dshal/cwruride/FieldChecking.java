@@ -53,9 +53,4 @@ public class FieldChecking {
                 numYear >= 2018
         );
     }
-
-    public boolean checkAddress(String input) {
-        //Comes from Google Maps?
-        return true;
-    }
 }

@@ -32,11 +32,11 @@ public class User {
     private String username;
     private String password;
 
-    boolean testing = false;
+    boolean testing = true;
 
     public User(String actualName, String cellPhone, String email, String pass){ //Object Created on Login
         /*Relevant sql information I hope you realize I have no idea what to place here*/
-        /*
+
         if (testing) {
             name = actualName;
             phoneNumber = cellPhone;
@@ -45,7 +45,7 @@ public class User {
             userId = 1;
 
             feedbackValue = 5;
-            reviewCount = 1;
+            feedbackCount = 1;
 
             ccInfo = 123;
             ccCCV = 420;
@@ -60,7 +60,7 @@ public class User {
             carPlate = "Steak"; //SQL User Database
             userLicense = "To Kill"; //SQL User Database
         }
-        */
+
 
         name = actualName;
         phoneNumber = cellPhone;

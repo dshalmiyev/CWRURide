@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -91,7 +92,7 @@ public class RideBoard extends AppCompatActivity {
                 try {
                     while (rs.next()) {
                         results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
-                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), rs.getDouble("drive_length"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), 20,
                                 rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
                                 rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
                     }
@@ -108,7 +109,7 @@ public class RideBoard extends AppCompatActivity {
                 try {
                     while (rs.next()) {
                         results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
-                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), rs.getDouble("drive_length"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), 20,
                                 rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
                                 rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
                     }
@@ -120,10 +121,36 @@ public class RideBoard extends AppCompatActivity {
                 break;
 
             case 2:
-                //SQL get method for my trips
+                //SQL get method for MyTrips
+                rs = new RemoteConnection().getMyTrips(MainActivity.testUser.getUserId(),pageNumber*10);
+                try {
+                    while (rs.next()) {
+                        results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), 20,
+                                rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
+                                rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
+                    }
+                    return results;
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 3:
                 //SQL get method for trip history
+                rs = new RemoteConnection().getTripHistory(MainActivity.testUser.getUserId(),pageNumber*10);
+                try {
+                    while (rs.next()) {
+                        results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), 20,
+                                rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
+                                rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
+                    }
+                    return results;
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 
@@ -388,25 +415,23 @@ public class RideBoard extends AppCompatActivity {
             public void onClick(View v) {
                 switch(MainActivity.boardNumber) {
                     case 0:
-                        //write to SQL
+                        new RemoteConnection().acceptRide(MainActivity.testUser.getFullName(), MainActivity.testUser.getUserId(),ride.getRideId());
                         break;
                     case 1:
-                        //write to sql
+                        new RemoteConnection().acceptRequest(MainActivity.testUser.getFullName(), MainActivity.testUser.getUserId(), ride.getRideId());
+                        break;
                     case 2:
                         if (currentRide.getStart()) {
                             currentRide.setEnd(true);
                             reviewDialogue();
+                            new RemoteConnection().endRide(ride.getRideId());
                             dialog.dismiss();
-                            /*MAKE NEW THINGIE MICHAEL*/
                         } else {
                             currentRide.setStart(true);
                             button1.setText("End Ride");
+                            new RemoteConnection().startRide(ride.getRideId());
                             dialog.dismiss();
                         }
-
-                        break;
-                    case 3:
-                        //
                         break;
                 }
             }
@@ -419,10 +444,18 @@ public class RideBoard extends AppCompatActivity {
         final Dialog dialog2 = new Dialog(RideBoard.this);
         dialog2.setContentView(R.layout.review_layout);
 
+        final EditText rating = (EditText) findViewById(R.id.rating);
+
         final Button button2 = dialog2.findViewById(R.id.review_confirm);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (MainActivity.testUser.getUserId() == currentRide.getDriverUserID()) {
+                    new RemoteConnection().review(rating.getEditableText().toString(), currentRide.getPassengerUserID());
+                }
+                else {
+                    new RemoteConnection().review(rating.getEditableText().toString(), currentRide.getDriverUserID());
+                }
                 dialog2.dismiss();
             }
 
