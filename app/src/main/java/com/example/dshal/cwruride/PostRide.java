@@ -25,15 +25,12 @@ import com.google.maps.model.TravelMode;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class PostRide extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
     String storedTextsp1 = "Time Selecter";
     String storedTextsp2 = "AM/PM Selecter!";
-    String storedTextsp3 = "Description Text";
     int spinner1ID, spinner2ID;
     boolean Pass_Drive; //Driver = True, Passenger = False
 
@@ -43,36 +40,36 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_ride);
 
-        MainActivity.testUser = new User();
-
         //Map
         MapFragment map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
         map.getMapAsync(this);
 
         //Spinner1
-        Spinner spinner1 = findViewById(R.id.spinner1);
+        final Spinner spinner1 = findViewById(R.id.driveLength);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.timelist,android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner1.setAdapter(adapter1);
         spinner1.setOnItemSelectedListener(this);
         spinner1ID = spinner1.getId();
 
+        final Spinner driveLength = findViewById(R.id.driveLength);
+
         //Description textBox
         final EditText descriptionBox = findViewById(R.id.description);
 
         //Datepicker textBox
-        final EditText editTextFromDate = (EditText) findViewById(R.id.editText3);
+        final EditText editTextFromDate = (EditText) findViewById(R.id.datePick);
         setDate fromDate = new setDate(editTextFromDate, this);
 
         //Timepicker textBox
-        final EditText editTextFromTime = (EditText) findViewById(R.id.editText4);
+        final EditText editTextFromTime = (EditText) findViewById(R.id.timePick);
         setTime fromTime = new setTime(editTextFromTime, this);
 
         //Error textView
         final TextView errorText = (TextView) findViewById(R.id.errorText);
         errorText.setVisibility(View.INVISIBLE);
 
-        //Destination textView
+        //Destination textBox
         final EditText destination = (EditText) findViewById(R.id.dropoffLocation);
         final EditText pickup = (EditText) findViewById(R.id.pickupLocation);
 
@@ -150,6 +147,9 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        new RemoteConnection().addRide(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
+                                editTextFromDate.getEditableText().toString(), driveLength.getSelectedItem().toString(),MainActivity.testUser.getFeedbackValue(),0,0,
+                                pickup.getEditableText().toString(),destination.getEditableText().toString(),descriptionBox.getEditableText().toString());
                     }
                 });
 
@@ -219,7 +219,9 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //new RemoteConnection().addRequest(MainActivity.testUser.get);
+                        new RemoteConnection().addRequest(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
+                                editTextFromDate.getEditableText().toString(), driveLength.getSelectedItem().toString(),MainActivity.testUser.getFeedbackValue(),0,0,
+                                pickup.getEditableText().toString(),destination.getEditableText().toString(),descriptionBox.getEditableText().toString());
                     }
                 });
 

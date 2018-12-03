@@ -17,13 +17,8 @@ public class AccountDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
 
-        MainActivity.testUser = new User();
-
-        final TextView firstName = (TextView) findViewById(R.id.firstName);
-        firstName.setText(MainActivity.testUser.getFirstName());
-
-        final TextView lastName = (TextView) findViewById(R.id.lastName);
-        lastName.setText(MainActivity.testUser.getLastName());
+        final TextView firstName = (TextView) findViewById(R.id.fullName);
+        firstName.setText(MainActivity.testUser.getFullName());
 
         final TextView phoneNumber = (TextView) findViewById(R.id.phoneNumber);
         phoneNumber.setText(MainActivity.testUser.getPhoneNumber());

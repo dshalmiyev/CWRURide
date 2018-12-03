@@ -7,7 +7,7 @@
     tools:context=".AccountDetails">
 
     <TextView
-        android:id="@+id/firstName"
+        android:id="@+id/fullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -32,17 +32,6 @@
 
 
     <TextView
-        android:id="@+id/lastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:text="lastName"
-        android:textSize="28sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/firstName" />
-
-    <TextView
         android:id="@+id/userRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,11 +46,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="57dp"
         android:text="phoneNumber"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/lastName" />
+        app:layout_constraintTop_toBottomOf="@+id/fullName" />
 
     <Button
         android:id="@+id/addCar"

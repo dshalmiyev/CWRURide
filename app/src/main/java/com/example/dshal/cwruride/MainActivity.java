@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.login:
-                Intent postRide = new Intent(getApplicationContext(), PostRide.class);
-                //startActivity(postRide);
+                Intent login = new Intent(getApplicationContext(), Login.class);
+                startActivity(login);
                 return true;
             case R.id.account_details:
                 Intent accountDetails = new Intent(getApplicationContext(), AccountDetails.class);

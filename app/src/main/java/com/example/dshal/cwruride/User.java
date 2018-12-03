@@ -1,11 +1,15 @@
 package com.example.dshal.cwruride;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+
 public class User {
-    private String firstName;
-    private String lastName;
+    private String name;
     private String phoneNumber;
     private double feedbackValue;
+    private int feedbackCount;
+
     //Payment Info
     private int ccInfo;
     private int ccCCV;
@@ -24,35 +28,31 @@ public class User {
     private String userLicense;
     //Idk if this is even usable now then
 
-    boolean testing = true;
+    private int userId;
+    private String username;
+    private String password;
 
-    public User(){ //Object Created on Case Login
+    boolean testing = false;
+
+    public User(String actualName, String cellPhone, String email, String pass){ //Object Created on Login
         /*Relevant sql information I hope you realize I have no idea what to place here*/
+        /*
         if (testing) {
-            firstName = "Anthony"; //From Case
-            lastName = "Shalmiyev"; // From Case
-            phoneNumber = "666-666-6666"; //From Case, look into link
-            feedbackValue = 1.1; // Average of all feedbacks in SQL User Database
-            ccInfo = 123; //SQL User Database
+            name = actualName;
+            phoneNumber = cellPhone;
+            username = email;
+            password = pass;
+            userId = 1;
+
+            feedbackValue = 5;
+            reviewCount = 1;
+
+            ccInfo = 123;
             ccCCV = 420;
             ccName = "Anthony Shalmiyev";
             billAddress = "1357 This Way";
-            ppInfo = 456; //SQL User Database
-            vmInfo = 789; //SQL User Database
-
-            //Rides
-            //Make new SQL table called X, SELECT * FROM Rides WHERE firstName = Rides.firstName and lastName = Rides.lastName
-            //MAKE RIDES
-            //int rideCount = SQL procedure SELECT COUNT...
-            //for (int i = 0; i < rideCount; i++) {
-                //userRides.add(new Ride(i, X));
-            //}
-            /*
-            userRides.add(new Ride(0, "Testing"));
-            userRides.add(new Ride(1,"Testing"));
-            userRides.add(new Ride(6,"Testing"));
-            */
-
+            ppInfo = 456;
+            vmInfo = 789;
 
             carYear = 2014; //SQL User Database
             carMake = "Michael"; //SQL User Database
@@ -60,6 +60,14 @@ public class User {
             carPlate = "Steak"; //SQL User Database
             userLicense = "To Kill"; //SQL User Database
         }
+        */
+
+        name = actualName;
+        phoneNumber = cellPhone;
+        username = email;
+        password = pass;
+        feedbackValue = 5;
+        feedbackCount = 1;
     }
     /*
     public String verifyRide(int day, int month, int year,int timeStart,int timeRange, int maxDriveEnd,boolean isDriving){
@@ -86,18 +94,26 @@ public class User {
     }
 
     //Get User Info
-    public String getFirstName() {
-        return firstName;
-    }
-    public String getLastName() {
-        return lastName;
+    public String getFullName() {
+        return name;
     }
     public String getPhoneNumber() {
         return phoneNumber;
     }
     public double getFeedbackValue() {
-        return feedbackValue;
+        return feedbackValue/feedbackCount;
     }
+    public void setFeedbackValue(double feedback) {
+        feedbackValue = feedback;
+    }
+    public void setFeedbackCount(int feedCount) {
+        feedbackCount = feedCount;
+    }
+
+    public int getUserId() {return userId; }
+    public void setUserID(int id) {userId = id; }
+    public String getUsername() {return username;}
+    public String getPassword() {return password; }
 
     //Get CC Info
     public int getCcInfo() {
