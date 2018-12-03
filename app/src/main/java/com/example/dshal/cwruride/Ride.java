@@ -58,8 +58,6 @@ public class Ride {
             date = rideDate;
 
         }
-
-
     }
 
     //methods

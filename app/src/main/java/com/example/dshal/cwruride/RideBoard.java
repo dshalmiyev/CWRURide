@@ -81,11 +81,13 @@ public class RideBoard extends AppCompatActivity {
         adds rides to shownRides based on board type
      */
     public ArrayList<Ride> getRideSet(int pageNumber) {
+        ResultSet rs;
+        ArrayList<Ride> results = new ArrayList<Ride>();
+
         switch (MainActivity.boardNumber) {
             case 0:
                 //SQL get method for available rides
-                ResultSet rs = new RemoteConnection().getRides(pageNumber*10);
-                ArrayList<Ride> results = new ArrayList<Ride>();
+                rs = new RemoteConnection().getRides(pageNumber*10);
                 try {
                     while (rs.next()) {
                         results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
@@ -99,9 +101,24 @@ public class RideBoard extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 break;
+
             case 1:
                 //SQL get method for available requests
+                rs = new RemoteConnection().getRequests(pageNumber*10);
+                try {
+                    while (rs.next()) {
+                        results.add(new Ride(rs.getInt("rides_id"), rs.getInt("driver_id"), rs.getInt("passenger_id"),
+                                rs.getString("driver_name"), rs.getString("passenger_name"), rs.getString("rides_time"), rs.getString("rides_date"), rs.getDouble("drive_length"),
+                                rs.getDouble("rating"), rs.getBoolean("rides_start_status"), rs.getBoolean("rides_end_status"),
+                                rs.getString("start_location"), rs.getString("end_location"), rs.getString("description"), ""));
+                    }
+                    return results;
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
+
             case 2:
                 //SQL get method for my trips
                 break;

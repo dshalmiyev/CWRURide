@@ -12,18 +12,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.TravelMode;
 
-import org.w3c.dom.Text;
+import org.joda.time.DateTime;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PostRide extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
@@ -32,7 +34,7 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
     String storedTextsp1 = "Time Selecter";
     String storedTextsp2 = "AM/PM Selecter!";
     String storedTextsp3 = "Description Text";
-    int spinner0ID, spinner1ID, spinner2ID;
+    int spinner1ID, spinner2ID;
     boolean Pass_Drive; //Driver = True, Passenger = False
 
 
@@ -40,6 +42,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_ride);
+
+        MainActivity.testUser = new User();
 
         //Map
         MapFragment map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
@@ -54,7 +58,7 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         spinner1ID = spinner1.getId();
 
         //Description textBox
-        final EditText descriptionBox = findViewById(R.id.editText);
+        final EditText descriptionBox = findViewById(R.id.description);
 
         //Datepicker textBox
         final EditText editTextFromDate = (EditText) findViewById(R.id.editText3);
@@ -67,6 +71,24 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         //Error textView
         final TextView errorText = (TextView) findViewById(R.id.errorText);
         errorText.setVisibility(View.INVISIBLE);
+
+        //Destination textView
+        final EditText destination = (EditText) findViewById(R.id.dropoffLocation);
+        final EditText pickup = (EditText) findViewById(R.id.pickupLocation);
+
+        destination.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                //calculateRoute(destination,pickup);
+            }
+        });
+
+        pickup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                //calculateRoute(destination,pickup);
+            }
+        });
 
         //Driver Button
         Button driver = (Button)findViewById(R.id.driver);
@@ -128,13 +150,6 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //SQL connection
-                        /*Connection SQLConnect = null;
-                        SQLConnect = RemoteConnection.getRemoteConnection();
-                        if(SQLConnect == null) {
-                            Toast.makeText(PostRide.this,"You lost again",Toast.LENGTH_SHORT).show();
-                        }
-                        */
                     }
                 });
 
@@ -155,7 +170,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 }
 
                 else if (!FieldChecking.checkDate(editTextFromDate.getEditableText().toString())) {
-                    errorText.setText("Date Format Error");
+                    String check = "date format error" + editTextFromDate.getEditableText().toString();
+                    errorText.setText(check);
                     errorText.setVisibility(View.VISIBLE);
                     return;
                 }
@@ -184,10 +200,10 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 //Dialog Cost text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
                 if (Pass_Drive == false) {
-                    text4.setText("Cost = OVER 9000!");
+                    text4.setText("$14.00");
                 }
                 else {
-                    text4.setText("Earnings = OVER 9000!");
+                    text4.setText("$14.00");
                 }
 
                 // set up the buttons
@@ -203,12 +219,7 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*Connection SQLConnect = null;
-                        SQLConnect = RemoteConnection.getRemoteConnection();
-                        if(SQLConnect == null) {
-                            Toast.makeText(PostRide.this,"You lost again",Toast.LENGTH_SHORT).show();
-                        }
-                        */
+                        //new RemoteConnection().addRequest(MainActivity.testUser.get);
                     }
                 });
 
@@ -219,15 +230,52 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         });
     }
 
+    private GeoApiContext getGeoContext() {
+        GeoApiContext geoApiContext = new GeoApiContext();
+        return geoApiContext.setQueryRateLimit(3).setApiKey("AIzaSyBSxxDKw8dQTDxgOq5lVxiFBZ44VM1rzJQ");
+    }
+
+    private void calculateRoute(EditText pickupText, EditText destinationText) {
+        if (pickupText.getEditableText().toString().equals("") || destinationText.getEditableText().toString().equals("")) {
+            //Do nothing
+        }
+        else {
+            String origin = pickupText.getEditableText().toString();
+            String destination = destinationText.getEditableText().toString();
+            DateTime now = new DateTime();
+            try {
+                DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
+                addMarkersToMap(result,mMap);
+            }
+            catch (com.google.maps.errors.ApiException api) {
+                System.out.println("API exception");
+                api.printStackTrace();
+            }
+            catch (InterruptedException ie){
+                System.out.println("Interrupted Exception");
+                ie.printStackTrace();
+            }
+            catch (IOException ioe){
+                System.out.println("IO Exception");
+                ioe.printStackTrace();
+            }
+        }
+    }
+
+    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].endAddress));
+    }
+
     //Map code
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //LatLng sydney = new LatLng(-34, 151);
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
