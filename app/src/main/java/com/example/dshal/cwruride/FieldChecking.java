@@ -53,4 +53,12 @@ public class FieldChecking {
                 numYear >= 2018
         );
     }
+
+    public static boolean caseCheck(String input) {
+        if(input.contains("@case.edu"))
+            return true;
+        else
+            return false;
+    }
+
 }
