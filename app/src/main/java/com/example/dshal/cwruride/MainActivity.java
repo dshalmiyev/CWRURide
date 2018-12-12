@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent postRide = new Intent(getApplicationContext(), PostRide.class);
+                new RemoteConnection().test();
                 startActivity(postRide);
             }
         });

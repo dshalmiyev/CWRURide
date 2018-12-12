@@ -1,38 +1,73 @@
 package com.example.dshal.cwruride;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.DirectionsApi;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.TravelMode;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.joda.time.DateTime;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class PostRide extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
+public class PostRide extends AppCompatActivity implements
+        OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private GoogleMap mMap;
-    String storedTextsp1 = "Time Selecter";
-    String storedTextsp2 = "AM/PM Selecter!";
-    int spinner1ID, spinner2ID;
-    boolean Pass_Drive; //Driver = True, Passenger = False
+    private GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    LatLng[] MarkerPoints = new LatLng[2];
+    Marker[] Markers = new Marker[2];
+    String originAddress;
+    String destinationAddress;
+    String totalDistanceString;
+    Double totalDistance;
+    String totalTimeString;
+    Double totalTime;
 
 
     @Override
@@ -40,19 +75,11 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_ride);
 
+        checkLocationPermission();
+
         //Map
         MapFragment map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
         map.getMapAsync(this);
-
-        //Spinner1
-        final Spinner spinner1 = findViewById(R.id.driveLength);
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.timelist,android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter1);
-        spinner1.setOnItemSelectedListener(this);
-        spinner1ID = spinner1.getId();
-
-        final Spinner driveLength = findViewById(R.id.driveLength);
 
         //Description textBox
         final EditText descriptionBox = findViewById(R.id.description);
@@ -69,21 +96,114 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         final TextView errorText = (TextView) findViewById(R.id.errorText);
         errorText.setVisibility(View.INVISIBLE);
 
-        //Destination textBox
-        final EditText destination = (EditText) findViewById(R.id.dropoffLocation);
-        final EditText pickup = (EditText) findViewById(R.id.pickupLocation);
+        final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
+        final TextView rideTime = (TextView) findViewById(R.id.ride_time);
 
-        destination.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        //Origin textBox
+        PlaceAutocompleteFragment originFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.origin_fragment);
+        originFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                //calculateRoute(destination,pickup);
+            public void onPlaceSelected(Place place) {
+
+                originAddress = place.getAddress().toString();
+                MarkerOptions currentMarker = new MarkerOptions();
+                currentMarker.position(place.getLatLng());
+                currentMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                if (MarkerPoints[0] == null) {
+                    Markers[0] = mMap.addMarker(currentMarker);
+                }
+                else {
+                    //Clear map
+                    mMap.clear();
+
+                    //Add selected place marker
+                    Markers[0] = mMap.addMarker(currentMarker);
+
+                    //If destination marker existed, add it back
+                    if (Markers[1] != null) {
+                        MarkerOptions previousMarker = new MarkerOptions();
+                        previousMarker.position(MarkerPoints[1]);
+                        previousMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        mMap.addMarker(previousMarker);
+                    }
+                }
+                MarkerPoints[0] = place.getLatLng();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(MarkerPoints[0]));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+                if (MarkerPoints[1] != null){
+                    LatLng origin = MarkerPoints[0];
+                    LatLng dest = MarkerPoints[1];
+
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(url);
+                    rideDistance.setText("Distance = " + totalDistanceString);
+                    rideTime.setText("Time = " + totalTimeString);
+                }
+            }
+
+            @Override
+            public void onError(Status status) {
+                //Print to Error Message
             }
         });
 
-        pickup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        //Destination textBox
+        PlaceAutocompleteFragment destinationFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.destination_fragment);
+        destinationFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                //calculateRoute(destination,pickup);
+            public void onPlaceSelected(Place place) {
+
+                destinationAddress = place.getAddress().toString();
+                MarkerOptions currentMarker = new MarkerOptions();
+                currentMarker.position(place.getLatLng());
+                currentMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                if (MarkerPoints[1] == null) {
+                    Markers[1] = mMap.addMarker(currentMarker);
+                }
+                else {
+                    //Clear map
+                    mMap.clear();
+
+                    //Add selected place marker
+                    Markers[1] = mMap.addMarker(currentMarker);
+
+                    //If destination marker existed, add it back
+                    if (Markers[0] != null) {
+                        MarkerOptions previousMarker = new MarkerOptions();
+                        previousMarker.position(MarkerPoints[0]);
+                        previousMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        mMap.addMarker(previousMarker);
+                    }
+                }
+                MarkerPoints[1] = place.getLatLng();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(MarkerPoints[1]));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+                if (MarkerPoints[0] != null){
+                    LatLng origin = MarkerPoints[0];
+                    LatLng dest = MarkerPoints[1];
+
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(url);
+
+                    //Set TextViews
+                    rideDistance.setText("Distance = " + totalDistanceString);
+                    rideTime.setText("Time = " + totalTimeString);
+                }
+            }
+
+            @Override
+            public void onError(Status status) {
+                //Print to Error Message
             }
         });
 
@@ -92,8 +212,7 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         driver.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!FieldChecking.checkTime(editTextFromTime.getEditableText().toString())) {
-                    String problems = "Time Format Error "+editTextFromTime.getEditableText().toString();
-                    errorText.setText(problems);
+                    errorText.setText("Time Format Error");
                     errorText.setVisibility(View.VISIBLE);
                     return;
                 }
@@ -106,8 +225,6 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
 
                 else
                     errorText.setVisibility(View.INVISIBLE);
-
-                Pass_Drive = true;
 
                 final Dialog dialog = new Dialog(PostRide.this);
                 dialog.setContentView(R.layout.fragment_confirm_dialog);
@@ -127,12 +244,10 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
 
                 //Earnings text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
-                if (Pass_Drive == true) {
-                    text4.setText("$14.00");
-                }
-                else {
-                    text4.setText("$14.00");
-                }
+                Double totalCost = 3 + totalDistance*.5 + totalTime*.15;
+                DecimalFormat decimalFormat = new DecimalFormat("$#.##");
+                decimalFormat.format(totalCost);
+                text4.setText(totalCost.toString());
 
                 // set up the buttons
                 Button button = (Button) dialog.findViewById(R.id.Cancel);
@@ -148,9 +263,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(View v) {
                         new RemoteConnection().addRide(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
-                                editTextFromDate.getEditableText().toString(), driveLength.getSelectedItem().toString(),MainActivity.testUser.getFeedbackValue(),0,0,
-                                pickup.getEditableText().toString(),destination.getEditableText().toString(),descriptionBox.getEditableText().toString());
-                        System.out.println("You made it this far. congratz");
+                                editTextFromDate.getEditableText().toString(), totalTimeString,MainActivity.testUser.getFeedbackValue(),0,0,
+                                originAddress,destinationAddress,descriptionBox.getEditableText().toString());
                     }
                 });
 
@@ -164,23 +278,19 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         passenger.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if (!FieldChecking.checkTime(editTextFromTime.getEditableText().toString())) {
-                    String check = "time format error" + editTextFromTime.getEditableText().toString();
-                    errorText.setText(check);
+                    errorText.setText("Time Format Error");
                     errorText.setVisibility(View.VISIBLE);
                     return;
                 }
 
                 else if (!FieldChecking.checkDate(editTextFromDate.getEditableText().toString())) {
-                    String check = "date format error" + editTextFromDate.getEditableText().toString();
-                    errorText.setText(check);
+                    errorText.setText("Date Format Error");
                     errorText.setVisibility(View.VISIBLE);
                     return;
                 }
 
                 else
                     errorText.setVisibility(View.INVISIBLE);
-
-                Pass_Drive = false;
 
                 //Create Dialog
                 final Dialog dialog = new Dialog(PostRide.this);
@@ -200,12 +310,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
 
                 //Dialog Cost text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
-                if (Pass_Drive == false) {
-                    text4.setText("$14.00");
-                }
-                else {
-                    text4.setText("$14.00");
-                }
+                Double totalCost = totalDistance * 7;
+                text4.setText(totalCost.toString());
 
                 // set up the buttons
                 Button button = (Button) dialog.findViewById(R.id.Cancel);
@@ -221,8 +327,8 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(View v) {
                         new RemoteConnection().addRequest(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
-                                editTextFromDate.getEditableText().toString(), driveLength.getSelectedItem().toString(),MainActivity.testUser.getFeedbackValue(),0,0,
-                                pickup.getEditableText().toString(),destination.getEditableText().toString(),descriptionBox.getEditableText().toString());
+                                editTextFromDate.getEditableText().toString(), totalTimeString,MainActivity.testUser.getFeedbackValue(),0,0,
+                                originAddress,destinationAddress,descriptionBox.getEditableText().toString());
                     }
                 });
 
@@ -233,78 +339,354 @@ public class PostRide extends AppCompatActivity implements AdapterView.OnItemSel
         });
     }
 
-    private GeoApiContext getGeoContext() {
-        GeoApiContext geoApiContext = new GeoApiContext();
-        return geoApiContext.setQueryRateLimit(3).setApiKey("AIzaSyBSxxDKw8dQTDxgOq5lVxiFBZ44VM1rzJQ");
-    }
-
-    private void calculateRoute(EditText pickupText, EditText destinationText) {
-        if (pickupText.getEditableText().toString().equals("") || destinationText.getEditableText().toString().equals("")) {
-            //Do nothing
-        }
-        else {
-            String origin = pickupText.getEditableText().toString();
-            String destination = destinationText.getEditableText().toString();
-            DateTime now = new DateTime();
-            try {
-                DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
-                addMarkersToMap(result,mMap);
-            }
-            catch (com.google.maps.errors.ApiException api) {
-                System.out.println("API exception");
-                api.printStackTrace();
-            }
-            catch (InterruptedException ie){
-                System.out.println("Interrupted Exception");
-                ie.printStackTrace();
-            }
-            catch (IOException ioe){
-                System.out.println("IO Exception");
-                ioe.printStackTrace();
-            }
-        }
-    }
-
-    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].endAddress));
-    }
-
     //Map code
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //Initialize Google Play Services
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+                mMap.setMyLocationEnabled(true);
+            }
+        }
+        else {
+            buildGoogleApiClient();
+            mMap.setMyLocationEnabled(true);
+        }
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(point));
+                //if 2 locations selected
+                if (MarkerPoints[0] != null && MarkerPoints[1] != null) {
+                    MarkerPoints[0] = null;
+                    MarkerPoints[1] = null;
+                    Markers[0] = null;
+                    Markers[1] = null;
+                    mMap.clear();
+                }
+
+                //add point
+                //add origin point
+                if (MarkerPoints[0] == null) {
+                    MarkerPoints[0] = point;
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(point);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    Markers[0] = mMap.addMarker(markerOptions);
+                }
+                //add destination point
+                else {
+                    MarkerPoints[1] = point;
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(point);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    Markers[1] = mMap.addMarker(markerOptions);
+                }
+
+                if (MarkerPoints[0] != null && MarkerPoints[1] != null) {
+                    LatLng origin = MarkerPoints[0];
+                    LatLng dest = MarkerPoints[1];
+
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(url);
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                    final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
+                    final TextView rideTime = (TextView) findViewById(R.id.ride_time);
+                    rideDistance.setText("Distance = " + totalDistanceString);
+                    rideTime.setText("Time = " + totalTimeString);
+                }
             }
         });
     }
 
-    //Selecting Values for Spinners
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(),text,Toast.LENGTH_SHORT).show();
-        if(parent.getId() == spinner1ID) {//need to determine how ID's work
-            storedTextsp1 = text;
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            Log.d("downloadUrl", data.toString());
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
         }
-        if(parent.getId() == spinner2ID) {//need to determine how ID's work
-            storedTextsp2 = text;
+        return data;
+    }
+
+    private class FetchUrl extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+
+            try {
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+                Log.d("Background Task data", data);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTask parserTask = new ParserTask();
+
+            // Invokes the thread for parsing the JSON data
+            parserTask.execute(result);
+
         }
     }
 
-    //Selecting Nothing for Spinners
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                Log.d("ParserTask",jsonData[0].toString());
+                DataParser parser = new DataParser();
+                Log.d("ParserTask", parser.toString());
+
+                // Starts parsing data
+                routes = parser.parse(jObject);
+                Log.d("ParserTask","Executing routes");
+                Log.d("ParserTask",routes.toString());
+
+                totalDistanceString = parser.totalDistanceString;
+                totalDistance = parser.totalDistance;
+                totalTime = parser.totalTime;
+
+            } catch (Exception e) {
+                Log.d("ParserTask",e.toString());
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points;
+            PolylineOptions lineOptions = null;
+
+            // Traversing through all the routes
+            for (int i = 0; i < result.size(); i++) {
+                points = new ArrayList<>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+
+                // Fetching all the points in i-th route
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.BLUE);
+
+                Log.d("onPostExecute","onPostExecute lineoptions decoded");
+
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if(lineOptions != null) {
+                mMap.addPolyline(lineOptions);
+            }
+            else {
+                Log.d("onPostExecute","without Polylines drawn");
+            }
+        }
+    }
+
+    //writes URL
+    private String getUrl(LatLng origin, LatLng dest) {
+
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String sensor = "sensor=false";
+        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+
+        return url;
+    }
+
+    public synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    // Added Google maps implementations
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        //do nothing
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        //stop location updates
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+    //permissions for location
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    public boolean checkLocationPermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Asking user if explanation is needed
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                //Prompt the user once explanation has been shown
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    //Permissions for location
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // Permission was granted.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        if (mGoogleApiClient == null) {
+                            buildGoogleApiClient();
+                        }
+                        mMap.setMyLocationEnabled(true);
+                    }
+
+                } else {
+
+                    // Permission denied, Disable the functionality that depends on this permission.
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            // other 'case' lines to check for other permissions this app might request.
+            //You can add here other case statements according to your requirement.
+        }
     }
 }

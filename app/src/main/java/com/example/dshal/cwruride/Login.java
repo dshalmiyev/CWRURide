@@ -59,7 +59,7 @@ public class Login extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (FieldChecking.caseCheck(editTextforFullName.getEditableText().toString())) {
+                if (FieldChecking.caseCheck(editTextforEmail.getEditableText().toString())) {
                     if (attemptUserPlacement(editTextforFullName.getEditableText().toString(), editTextforPasswordCreate.getEditableText().toString(),
                             editTextforEmail.getEditableText().toString(), editTextforPhoneNumber.getEditableText().toString())) {
                         MainActivity.testUser = new User(editTextforFullName.getEditableText().toString(), editTextforPhoneNumber.getEditableText().toString(),

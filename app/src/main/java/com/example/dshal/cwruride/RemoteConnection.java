@@ -50,7 +50,6 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
                     return rs;
 
                 case "addRequest":
-                    System.out.println("about to query");
                     query = "INSERT INTO Rides (passenger_id, passenger_name, rides_time, rides_date, drive_length, rating, rides_start_status, rides_end_status, start_location, end_location, description) "
                             + "VALUES (" + params[1] + ", '" + params[2] + "', '" + params[3] + "', '" + params[4] + "', '" + params[5] + "', "
                             + params[6] + ", " + params[7] + ", " + params[8] + ", '" + params[9] + "', '" + params[10] + "', '" + params[11] + "')";
@@ -116,6 +115,11 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
 
                 case "review":
                     query = "UPDATE Users SET rating_sum = rating_sum + " + params[1] + ", rating_count = rating_count + 1 WHERE user_id = " + params[2];
+                    stmt.executeUpdate(query);
+                    return null;
+
+                case "test":
+                    query = "alter table Users add test varchar(100) NULL";
                     stmt.executeUpdate(query);
                     return null;
 
@@ -261,6 +265,16 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
         try {
             new RemoteConnection().execute("review", rating, Integer.toString(userID)).get();
         } catch (InterruptedException ie) {
+            Log.e("InterruptedException", ie.getMessage());
+        } catch (ExecutionException ee) {
+            Log.e("ExecutionException", ee.getMessage());
+        }
+    }
+
+    public void test () {
+        try {
+            new RemoteConnection().execute("test").get();
+        }catch (InterruptedException ie) {
             Log.e("InterruptedException", ie.getMessage());
         } catch (ExecutionException ee) {
             Log.e("ExecutionException", ee.getMessage());
