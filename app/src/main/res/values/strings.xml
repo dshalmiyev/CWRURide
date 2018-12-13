@@ -56,4 +56,19 @@
         <item>12:30</item>
     </string-array>
 
+    <string-array name="helpList">
+        <item>Posting a Ride</item>
+        <item>Accepting a Ride</item>
+        <item>Starting and Ending a Ride</item>
+    </string-array>
+
+    <string name="posting_Ride">In order to post a ride, start by clicking the post ride on the bottom of the
+                                main page. This will bring you to the Post a Ride page. Here you can input all
+                                The information about your ride including the pick-up and drop-off locations,
+                                date, time and if you will be the driver or the passenger. After clicking the
+                                driver or passenger button at the bottom of the page, a confirmation dialog will
+                                appear. You can choose to close the dialog and adjust your ride or you can confirm
+                                the post and the ride will appear in the appropriate ride your current trips boards.
+    </string>
+
 </resources>
