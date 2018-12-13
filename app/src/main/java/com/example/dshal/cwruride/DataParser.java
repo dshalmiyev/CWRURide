@@ -26,6 +26,11 @@ public class DataParser {
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
 
+        totalDistanceString = "";
+        totalTimeString = "";
+        totalTime = 0;
+        totalDistance = 0;
+
         List<List<HashMap<String, String>>> routes = new ArrayList<>() ;
         JSONArray jRoutes;
         JSONArray jLegs;
@@ -50,8 +55,9 @@ public class DataParser {
                     time = time + Integer.parseInt(jTime.getString("value"));
 
                     totalDistance = distance / 1000;
-                    DecimalFormat decimalFormat = new DecimalFormat(".# km");
-                    totalDistanceString = decimalFormat.format(totalDistance);
+                    //DecimalFormat decimalFormat = new DecimalFormat(".# km");
+                    //totalDistanceString = decimalFormat.format(totalDistance);
+                    totalDistanceString = Double.toString(totalDistance);
 
                     int days = time / 86400;
                     int hours = (time - days * 86400) / 3600;

@@ -55,7 +55,7 @@ import java.util.List;
 public class PostRide extends AppCompatActivity implements
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
     Location mLastLocation;
@@ -64,11 +64,12 @@ public class PostRide extends AppCompatActivity implements
     Marker[] Markers = new Marker[2];
     String originAddress;
     String destinationAddress;
-    String totalDistanceString;
-    Double totalDistance;
-    String totalTimeString;
-    Double totalTime;
-
+    static String totalDistanceString;
+    static Double totalDistance;
+    static String totalTimeString;
+    static Double totalTime;
+    static TextView rideDistance;
+    static TextView rideTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +97,8 @@ public class PostRide extends AppCompatActivity implements
         final TextView errorText = (TextView) findViewById(R.id.errorText);
         errorText.setVisibility(View.INVISIBLE);
 
-        final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
-        final TextView rideTime = (TextView) findViewById(R.id.ride_time);
+        rideDistance = (TextView) findViewById(R.id.ride_distance);
+        rideTime = (TextView) findViewById(R.id.ride_time);
 
         //Origin textBox
         PlaceAutocompleteFragment originFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.origin_fragment);
@@ -401,16 +402,12 @@ public class PostRide extends AppCompatActivity implements
                     //move map camera
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-                    final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
-                    final TextView rideTime = (TextView) findViewById(R.id.ride_time);
-                    rideDistance.setText("Distance = " + totalDistanceString);
-                    rideTime.setText("Time = " + totalTimeString);
                 }
             }
         });
     }
 
-    private String downloadUrl(String strUrl) throws IOException {
+    private static String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -448,7 +445,7 @@ public class PostRide extends AppCompatActivity implements
         return data;
     }
 
-    private class FetchUrl extends AsyncTask<String, Void, String> {
+    private static class FetchUrl extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... url) {
@@ -478,7 +475,7 @@ public class PostRide extends AppCompatActivity implements
         }
     }
 
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    private static class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         // Parsing the data in non-ui thread
         @Override
@@ -489,21 +486,22 @@ public class PostRide extends AppCompatActivity implements
 
             try {
                 jObject = new JSONObject(jsonData[0]);
-                Log.d("ParserTask",jsonData[0].toString());
+                //Log.d("ParserTask",jsonData[0].toString());
                 DataParser parser = new DataParser();
-                Log.d("ParserTask", parser.toString());
+                //Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
                 routes = parser.parse(jObject);
-                Log.d("ParserTask","Executing routes");
-                Log.d("ParserTask",routes.toString());
+                //Log.d("ParserTask","Executing routes");
+                //Log.d("ParserTask",routes.toString());
 
                 totalDistanceString = parser.totalDistanceString;
                 totalDistance = parser.totalDistance;
                 totalTime = parser.totalTime;
+                totalTimeString = parser.totalTimeString;
 
             } catch (Exception e) {
-                Log.d("ParserTask",e.toString());
+                //Log.d("ParserTask",e.toString());
                 e.printStackTrace();
             }
             return routes;
@@ -539,8 +537,12 @@ public class PostRide extends AppCompatActivity implements
                 lineOptions.color(Color.BLUE);
 
                 Log.d("onPostExecute","onPostExecute lineoptions decoded");
-
             }
+
+            //final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
+            //final TextView rideTime = (TextView) findViewById(R.id.ride_time);
+            rideDistance.setText("Distance = " + totalDistanceString);
+            rideTime.setText("Time = " + totalTimeString);
 
             // Drawing polyline in the Google Map for the i-th route
             if(lineOptions != null) {
@@ -584,11 +586,11 @@ public class PostRide extends AppCompatActivity implements
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        //MarkerOptions markerOptions = new MarkerOptions();
+        //markerOptions.position(latLng);
+        //markerOptions.title("Current Position");
+        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        //mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
