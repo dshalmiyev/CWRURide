@@ -69,7 +69,8 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
                 case "addUser":
                     query = "SELECT COUNT(*) FROM Users WHERE email = '" + params[3] + "'";
                     rs = stmt.executeQuery(query);
-                    if (rs.next()) {
+                    rs.next();
+                    if (rs.getInt(1) == 0) {
                         query = "INSERT INTO Users (user_name, password, email, phone_number, rating_sum, rating_count) VALUES ('"
                                 + params[1] + "', '" + params[2] + "', '" + params[3] + "', '" + params[4] + "', " + params[5] + ", " + params[6] + ")";
                         stmt.executeUpdate(query);

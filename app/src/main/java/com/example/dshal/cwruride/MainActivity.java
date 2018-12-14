@@ -56,17 +56,33 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(Gravity.START);
                         return true;
                     case R.id.my_trips:
-                        boardNumber = 2;
-                        Intent myTrips = new Intent(getApplicationContext(), RideBoard.class);
-                        startActivity(myTrips);
-                        drawerLayout.closeDrawer(Gravity.START);
-                        return true;
+                        if (testUser == null) {
+                            Toast.makeText(getApplicationContext(), "No User Found", Toast.LENGTH_LONG).show();
+                            Intent Login = new Intent(getApplicationContext(), Login.class);
+                            startActivity(Login);
+                            return true;
+                        }
+                        else {
+                            boardNumber = 2;
+                            Intent myTrips = new Intent(getApplicationContext(), RideBoard.class);
+                            startActivity(myTrips);
+                            drawerLayout.closeDrawer(Gravity.START);
+                            return true;
+                        }
                     case R.id.trip_history:
-                        boardNumber = 3;
-                        Intent tripHistory = new Intent(getApplicationContext(), RideBoard.class);
-                        startActivity(tripHistory);
-                        drawerLayout.closeDrawer(Gravity.START);
-                        return true;
+                        if (testUser == null) {
+                            Toast.makeText(getApplicationContext(), "No User Found", Toast.LENGTH_LONG).show();
+                            Intent Login = new Intent(getApplicationContext(), Login.class);
+                            startActivity(Login);
+                            return true;
+                        }
+                        else {
+                            boardNumber = 3;
+                            Intent tripHistory = new Intent(getApplicationContext(), RideBoard.class);
+                            startActivity(tripHistory);
+                            drawerLayout.closeDrawer(Gravity.START);
+                            return true;
+                        }
                     case R.id.buzzwords:
                         Intent buzzwords = new Intent(getApplicationContext(), Buzzwords.class);
                         startActivity(buzzwords);

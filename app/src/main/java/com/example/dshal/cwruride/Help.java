@@ -23,7 +23,6 @@ public class Help extends AppCompatActivity implements AdapterView.OnItemSelecte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         helpSpinner.setAdapter(adapter);
         helpSpinner.setOnItemSelectedListener(this);
-        spinnerChoice(value);
 
     }
 
@@ -34,6 +33,7 @@ public class Help extends AppCompatActivity implements AdapterView.OnItemSelecte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         value = parent.getItemAtPosition(position).toString();
+        spinnerChoice(value);
     }
 
     @Override
@@ -46,21 +46,27 @@ public class Help extends AppCompatActivity implements AdapterView.OnItemSelecte
         switch(v) {
             case "Posting a Ride":
                 help.setText(R.string.posting_ride);
+                break;
 
             case "Accepting a Ride":
                 help.setText(R.string.accepting_ride);
+                break;
 
             case "Starting and Ending a Ride":
                 help.setText(R.string.start_end);
+                break;
 
             case "About":
                 help.setText(R.string.about);
+                break;
 
             case "Accounts":
                 help.setText(R.string.accounts);
+                break;
 
             case "Buzzwords":
                 help.setText(R.string.buzzwords_help);
+                break;
         }
     }
 
