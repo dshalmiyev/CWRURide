@@ -59,8 +59,8 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
 
                 case "addRide":
                     System.out.println("about to query");
-                    query = "INSERT INTO Rides (driver_id, driver_name, rides_time, rides_date, drive_length, rating, rides_start_status, rides_end_status, start_location, end_location, description) "
-                            + "VALUES (" + params[1] + ", '" + params[2] + "', '" + params[3] + "', '" + params[4] + "', '" + params[5] + "', "
+                    query = "INSERT INTO Rides (driver_id, driver_name, rides_time, rides_date, cost, rating, rides_start_status, rides_end_status, start_location, end_location, description) "
+                            + "VALUES (" + params[1] + ", '" + params[2] + "', '" + params[3] + "', '" + params[4] + "', " + params[5] + ", "
                             + params[6] + ", " + params[7] + ", " + params[8] + ", '" + params[9] + "', '" + params[10] + "', '" + params[11] + "')";
                     stmt.executeUpdate(query);
                     System.out.println(query);
@@ -118,11 +118,20 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
                     stmt.executeUpdate(query);
                     return null;
 
-                case "test":
-                    query = "alter table Users add test varchar(100) NULL";
+                case "addCar":
+                    query = "UPDATE Users SET year = " + params[1] + ", make = '" + params[2] + "', model = '" + params[3] + "', plate = '" + params[4] + "', license = '" + params[5] + "' WHERE user_id = " + params[6];
                     stmt.executeUpdate(query);
                     return null;
 
+                case "removeCar":
+                    query = "UPDATE Users SET year = NULL, make = NULL, model = NULL, plate = NULL, license = NULL WHERE user_id = " + params[1];
+                    stmt.executeUpdate(query);
+                    return null;
+
+                case "checkCar":
+                    query = "SELECT year, make, model, plate, license FROM Users WHERE user_id = " + params[1];
+                    rs = stmt.executeQuery(query);
+                    return rs;
             }
         } catch (SQLException e) {
             System.out.println("SQL exception");
@@ -165,10 +174,10 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
         }
     }
 
-    public void addRide(int driverID, String driverName, String ridesTime, String ridesDate, String rideLength, double rating,
+    public void addRide(int driverID, String driverName, String ridesTime, String ridesDate, Double cost, double rating,
                         int startStatus, int endStatus, String startLocation, String endLocation, String description) {
         try {
-            new RemoteConnection().execute("addRide", Integer.toString(driverID), driverName, ridesTime, ridesDate, rideLength,
+            new RemoteConnection().execute("addRide", Integer.toString(driverID), driverName, ridesTime, ridesDate, Double.toString(cost),
                 Double.toString(rating), Integer.toString(startStatus), Integer.toString(endStatus), startLocation, endLocation, description).get();
         } catch (InterruptedException ie) {
             Log.e("InterruptedException", ie.getMessage());
@@ -271,14 +280,40 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
         }
     }
 
-    public void test () {
+    public void addCar(int year, String make, String model, String plate, String license, int userID) {
         try {
-            new RemoteConnection().execute("test").get();
-        }catch (InterruptedException ie) {
+            new RemoteConnection().execute("addCar", Integer.toString(year), make, model, plate, license, Integer.toString(userID)).get();
+        } catch (InterruptedException ie) {
             Log.e("InterruptedException", ie.getMessage());
         } catch (ExecutionException ee) {
             Log.e("ExecutionException", ee.getMessage());
         }
     }
+
+    public void removeCar(int userID) {
+        try {
+            new RemoteConnection().execute("removeCar", Integer.toString(userID)).get();
+        }
+        catch (InterruptedException ie) {
+            Log.e("InterruptedException", ie.getMessage());
+        }
+        catch (ExecutionException ee) {
+            Log.e("ExecutionException", ee.getMessage());
+        }
+    }
+
+    public ResultSet checkCar(int userID) {
+        try {
+            return new RemoteConnection().execute("checkCar", Integer.toString(userID)).get();
+        }
+        catch (InterruptedException ie) {
+            Log.e("InterruptedException", ie.getMessage());
+        }
+        catch (ExecutionException ee) {
+            Log.e("ExecutionException", ee.getMessage());
+        }
+        return null;
+    }
+
 }
 

@@ -2,8 +2,11 @@ package com.example.dshal.cwruride;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,6 +54,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class PostRide extends AppCompatActivity implements
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
@@ -64,12 +68,17 @@ public class PostRide extends AppCompatActivity implements
     Marker[] Markers = new Marker[2];
     String originAddress;
     String destinationAddress;
+    String locationAddress;
+    double totalCost;
     static String totalDistanceString;
     static Double totalDistance;
     static String totalTimeString;
     static Double totalTime;
     static TextView rideDistance;
     static TextView rideTime;
+    static PlaceAutocompleteFragment originFragment;
+    static PlaceAutocompleteFragment destinationFragment;
+    static Boolean MarkerCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +110,7 @@ public class PostRide extends AppCompatActivity implements
         rideTime = (TextView) findViewById(R.id.ride_time);
 
         //Origin textBox
-        PlaceAutocompleteFragment originFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.origin_fragment);
+        originFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.origin_fragment);
         originFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -154,7 +163,7 @@ public class PostRide extends AppCompatActivity implements
         });
 
         //Destination textBox
-        PlaceAutocompleteFragment destinationFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.destination_fragment);
+        destinationFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.destination_fragment);
         destinationFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -245,10 +254,10 @@ public class PostRide extends AppCompatActivity implements
 
                 //Earnings text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
-                Double totalCost = 3 + totalDistance*.5 + totalTime*.15;
-                DecimalFormat decimalFormat = new DecimalFormat("$#.##");
-                decimalFormat.format(totalCost);
-                text4.setText(totalCost.toString());
+                totalCost = 3 + totalDistance*.5 + totalTime*.15;
+                int cost1 = (int)(totalCost * 100);
+                totalCost = cost1 / 100.0;
+                text4.setText("$" + totalCost);
 
                 // set up the buttons
                 Button button = (Button) dialog.findViewById(R.id.Cancel);
@@ -264,7 +273,7 @@ public class PostRide extends AppCompatActivity implements
                     @Override
                     public void onClick(View v) {
                         new RemoteConnection().addRide(MainActivity.testUser.getUserId(), MainActivity.testUser.getFullName(),editTextFromTime.getEditableText().toString(),
-                                editTextFromDate.getEditableText().toString(), totalTimeString,MainActivity.testUser.getFeedbackValue(),0,0,
+                                editTextFromDate.getEditableText().toString(), totalCost,MainActivity.testUser.getFeedbackValue(),0,0,
                                 originAddress,destinationAddress,descriptionBox.getEditableText().toString());
                     }
                 });
@@ -311,8 +320,10 @@ public class PostRide extends AppCompatActivity implements
 
                 //Dialog Cost text
                 TextView text4 = (TextView) dialog.findViewById(R.id.textView5);
-                Double totalCost = totalDistance * 7;
-                text4.setText(totalCost.toString());
+                totalCost = 3 + totalDistance*.5 + totalTime*.15;
+                int cost1 = (int)(totalCost * 100);
+                totalCost = cost1 / 100.0;
+                text4.setText("$" + totalCost);
 
                 // set up the buttons
                 Button button = (Button) dialog.findViewById(R.id.Cancel);
@@ -338,6 +349,62 @@ public class PostRide extends AppCompatActivity implements
 
             }
         });
+    }
+
+
+    private class ReverseGeocodingTask extends AsyncTask<LatLng, Void, String>{
+        Context mContext;
+        public ReverseGeocodingTask(Context context){
+            super();
+            mContext = context;
+        }
+
+        // Finding address using reverse geocoding
+        @Override
+        protected String doInBackground(LatLng... params) {
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            double latitude = params[0].latitude;
+            double longitude = params[0].longitude;
+            List<Address> addresses = null;
+            String addressText="";
+            try {
+                addresses = geocoder.getFromLocation(latitude, longitude,1);
+                Thread.sleep(500);
+                if(addresses != null && addresses.size() > 0 ){
+                    Address address = addresses.get(0);
+                    addressText = String.format("%s", address.getMaxAddressLineIndex() >= 0 ? address.getAddressLine(0) : "");
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (params[0] == MarkerPoints[0]) {
+                MarkerCheck = true;
+            }
+            else {
+                MarkerCheck = false;
+            }
+
+            locationAddress = addressText;
+            return addressText;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //do stuff with location here
+            if (MarkerCheck) {
+                originAddress = locationAddress;
+                originFragment.setText(locationAddress);
+            }
+            else {
+                destinationAddress = locationAddress;
+                destinationFragment.setText(locationAddress);
+            }
+            System.out.println(locationAddress);
+        }
     }
 
     //Map code
@@ -369,6 +436,7 @@ public class PostRide extends AppCompatActivity implements
                     Markers[0] = null;
                     Markers[1] = null;
                     mMap.clear();
+                    destinationFragment.setText("");
                 }
 
                 //add point
@@ -378,6 +446,9 @@ public class PostRide extends AppCompatActivity implements
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(point);
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    new ReverseGeocodingTask(getBaseContext()).execute(point);
+                    markerOptions.title(locationAddress);
+                    markerOptions.snippet(locationAddress);
                     Markers[0] = mMap.addMarker(markerOptions);
                 }
                 //add destination point
@@ -386,6 +457,9 @@ public class PostRide extends AppCompatActivity implements
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(point);
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    new ReverseGeocodingTask(getBaseContext()).execute(point);
+                    markerOptions.title(locationAddress);
+                    markerOptions.snippet(locationAddress);
                     Markers[1] = mMap.addMarker(markerOptions);
                 }
 
@@ -394,7 +468,7 @@ public class PostRide extends AppCompatActivity implements
                     LatLng dest = MarkerPoints[1];
 
                     String url = getUrl(origin, dest);
-                    Log.d("onMapClick", url.toString());
+                    Log.d("onMapClick", url);
                     FetchUrl FetchUrl = new FetchUrl();
 
                     // Start downloading json data from Google Directions API
@@ -471,7 +545,6 @@ public class PostRide extends AppCompatActivity implements
 
             // Invokes the thread for parsing the JSON data
             parserTask.execute(result);
-
         }
     }
 
@@ -534,8 +607,6 @@ public class PostRide extends AppCompatActivity implements
                 Log.d("onPostExecute","onPostExecute lineoptions decoded");
             }
 
-            //final TextView rideDistance = (TextView) findViewById(R.id.ride_distance);
-            //final TextView rideTime = (TextView) findViewById(R.id.ride_time);
             rideDistance.setText("Distance = " + totalDistanceString);
             rideTime.setText("Time = " + totalTimeString);
 
@@ -581,7 +652,7 @@ public class PostRide extends AppCompatActivity implements
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        
+
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
