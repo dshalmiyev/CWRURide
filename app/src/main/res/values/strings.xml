@@ -57,9 +57,12 @@
     </string-array>
 
     <string-array name="helpList">
+        <item>About</item>
+        <item>Accounts</item>
         <item>Posting a Ride</item>
         <item>Accepting a Ride</item>
         <item>Starting and Ending a Ride</item>
+        <item>Buzzwords</item>
     </string-array>
 
     <string name="posting_ride">In order to post a ride, start by clicking the post button ride on the bottom of the
@@ -85,6 +88,22 @@
                                 After starting the trip, if you click on the ride again, the start ride button will become an
                                 end ride button. Clicking this will end the ride and once again, both the driver and the passenger
                                 need to end the ride. Ending the ride will open up the review page.
+    </string>
+    <string name="buzzwords_help">Buzzwords are common places that CWRU students may request rides to and from. Buzzwords are useful
+                                    for the descriptions you will see on posted rides. You cen find buzzwords in the left hand slide
+                                    menu. Click on the buzzwords tab to see the names and descriptions of buzzwords so you can use them
+                                    when posting and accepting rides.
+    </string>
+    <string name="accounts">Creating an account is very easy. Start by clicking the options menu in the main page. Open the menu
+                            by clicking the three dots in the top right corner. After the menu opens, click on the login page to
+                            either login or create and account. To create an account input your email, password, name and number
+                            into the lower fields and hit the create account button. Your email must be a CWRU (@case.edu) email.
+                            After creating an account you can login by inputting your email and password into the upper fields.
+                            After you login, you can find  your account details in the options menu on the main page.
+    </string>
+    <string name="about">CWRU Ride is a rideshare app designed for Case Western Reserve University students. The main function of this
+                            app is to provide a place where students can post rides to places they want to go making travel for students
+                            easier.
     </string>
     <string name="endride">End Ride</string>
 
