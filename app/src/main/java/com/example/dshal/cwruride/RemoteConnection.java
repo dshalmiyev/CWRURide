@@ -123,6 +123,11 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
                     stmt.executeUpdate(query);
                     return null;
 
+                case "addCar":
+                    query = "UPDATE Users SET year = " + params[1] + ", make = " + params[2] + ", model = " + params[3] + ", plate = " + params[4] + ", user_license = " + params[5] + "WHERE user_id = " + params[6];
+                    stmt.executeUpdate(query);
+                    return null;
+
             }
         } catch (SQLException e) {
             System.out.println("SQL exception");
@@ -280,5 +285,17 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
             Log.e("ExecutionException", ee.getMessage());
         }
     }
+
+    public void addCar(int year, String make, String model, String plate, String license, int userID) {
+        try {
+            new RemoteConnection().execute("addCar", Integer.toString(year), make, model, plate, license, Integer.toString(userID)).get();
+        } catch (InterruptedException ie) {
+            Log.e("InterruptedException", ie.getMessage());
+        } catch (ExecutionException ee) {
+            Log.e("ExecutionException", ee.getMessage());
+        }
+    }
 }
+
+
 
