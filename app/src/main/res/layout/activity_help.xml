@@ -31,34 +31,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/postRideHelp"
+        android:id="@+id/helpText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="57dp"
-        android:text="Posting a Ride"
+        android:text="@string/posting_ride"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/helpSpinner" />
-
-    <TextView
-        android:id="@+id/acceptRideHelp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="46dp"
-        android:text="Accepting a Ride"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/postRideHelp"
-        app:layout_constraintTop_toBottomOf="@+id/postRideHelp" />
-
-    <TextView
-        android:id="@+id/startEndHelp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:text="Starting and Ending a Ride"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/acceptRideHelp"
-        app:layout_constraintTop_toBottomOf="@+id/acceptRideHelp" />
 
 </android.support.constraint.ConstraintLayout>

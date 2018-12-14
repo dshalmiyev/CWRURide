@@ -62,13 +62,30 @@
         <item>Starting and Ending a Ride</item>
     </string-array>
 
-    <string name="posting_Ride">In order to post a ride, start by clicking the post ride on the bottom of the
+    <string name="posting_ride">In order to post a ride, start by clicking the post button ride on the bottom of the
                                 main page. This will bring you to the Post a Ride page. Here you can input all
                                 The information about your ride including the pick-up and drop-off locations,
                                 date, time and if you will be the driver or the passenger. After clicking the
                                 driver or passenger button at the bottom of the page, a confirmation dialog will
                                 appear. You can choose to close the dialog and adjust your ride or you can confirm
-                                the post and the ride will appear in the appropriate ride your current trips boards.
+                                the post and the ride will appear in the appropriate ride and my trips boards.
     </string>
+    <string name="accepting_ride">In order to accept a ride you must first decide if you wish to be a passenger or a driver.
+                                    If you would like to be a driver, click on the available requests tab from the left slide
+                                    menu of the main page. If you wish to be a passenger, click on the available rides tab on
+                                    the same slide menu. After clicking on your desired tab, a page with a table of rides will
+                                    open. The table will show the time, date and description of the ride along with the rating
+                                    of the user who posted it. By clicking on a row in the table, a dialogue will open with more
+                                    detailed information about the ride. In this dialogue you can choose to cancel and continue
+                                    looking for rides or you can accept the ride which will enter your my trips board.
+    </string>
+    <string name="start_end">In order to start a ride you must go to your my trips page and click on the ride you would like
+                                to start. When you click on a ride a dialogue will open giving you the option to start a ride
+                                or to cancel and close the dialogue. Both the driver and the passenger need to start the trip.
+                                After starting the trip, if you click on the ride again, the start ride button will become an
+                                end ride button. Clicking this will end the ride and once again, both the driver and the passenger
+                                need to end the ride. Ending the ride will open up the review page.
+    </string>
+    <string name="endride">End Ride</string>
 
 </resources>

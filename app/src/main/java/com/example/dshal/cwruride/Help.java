@@ -42,23 +42,15 @@ public class Help extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
 
     public void spinnerChoice(String v){
-        TextView postHelp = findViewById(R.id.postRideHelp);
-        TextView acceptHelp = findViewById(R.id.acceptRideHelp);
-        TextView startEndHelp = findViewById(R.id.startEndHelp);
+        TextView help = findViewById(R.id.helpText);
         if(v.equals("Posting a Ride")){
-            postHelp.setVisibility(View.VISIBLE);
-            acceptHelp.setVisibility(View.GONE);
-            startEndHelp.setVisibility(View.GONE);
+            help.setText(R.string.posting_ride);
         }
         if(v.equals("Accepting a Ride")){
-            acceptHelp.setVisibility(View.VISIBLE);
-            startEndHelp.setVisibility(View.GONE);
-            postHelp.setVisibility(View.GONE);
+            help.setText(R.string.accepting_ride);
         }
         if(v.equals("Starting and Ending a Ride")){
-            startEndHelp.setVisibility(View.VISIBLE);
-            acceptHelp.setVisibility(View.GONE);
-            postHelp.setVisibility(View.GONE);
+            help.setText(R.string.start_end);
         }
     }
 
