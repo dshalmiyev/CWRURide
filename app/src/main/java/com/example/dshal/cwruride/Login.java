@@ -44,6 +44,7 @@ public class Login extends AppCompatActivity {
                             MainActivity.testUser.setUserID(rs.getInt(1));
                             MainActivity.testUser.setFeedbackValue(rs.getDouble(3));
                             MainActivity.testUser.setFeedbackCount(rs.getInt(4));
+                            Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_LONG).show();
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -65,6 +66,7 @@ public class Login extends AppCompatActivity {
                         MainActivity.testUser = new User(editTextforFullName.getEditableText().toString(), editTextforPhoneNumber.getEditableText().toString(),
                                 editTextforEmail.getEditableText().toString(), editTextforPasswordCreate.getEditableText().toString());
                         MainActivity.testUser.setUserID(placementID);
+                        Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG).show();
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "Email already exists", Toast.LENGTH_LONG).show();
