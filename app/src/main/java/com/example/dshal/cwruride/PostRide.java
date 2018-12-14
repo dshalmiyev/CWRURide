@@ -486,14 +486,10 @@ public class PostRide extends AppCompatActivity implements
 
             try {
                 jObject = new JSONObject(jsonData[0]);
-                //Log.d("ParserTask",jsonData[0].toString());
                 DataParser parser = new DataParser();
-                //Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
                 routes = parser.parse(jObject);
-                //Log.d("ParserTask","Executing routes");
-                //Log.d("ParserTask",routes.toString());
 
                 totalDistanceString = parser.totalDistanceString;
                 totalDistance = parser.totalDistance;
@@ -501,7 +497,6 @@ public class PostRide extends AppCompatActivity implements
                 totalTimeString = parser.totalTimeString;
 
             } catch (Exception e) {
-                //Log.d("ParserTask",e.toString());
                 e.printStackTrace();
             }
             return routes;
@@ -586,12 +581,7 @@ public class PostRide extends AppCompatActivity implements
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //MarkerOptions markerOptions = new MarkerOptions();
-        //markerOptions.position(latLng);
-        //markerOptions.title("Current Position");
-        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        //mCurrLocationMarker = mMap.addMarker(markerOptions);
-
+        
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
