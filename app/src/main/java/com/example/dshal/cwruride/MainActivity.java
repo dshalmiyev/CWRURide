@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static int boardNumber;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Post a Ride
-        Button post = (Button)findViewById(R.id.post);
+        Button post = (Button) findViewById(R.id.post);
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         //Navigation View Code
         final NavigationView navview = findViewById(R.id.navview);
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int i = menuItem.getItemId();
-                switch (i){
+                switch (i) {
                     case R.id.available_rides:
                         boardNumber = 0;
                         Intent requestBoard = new Intent(getApplicationContext(), RideBoard.class);
@@ -98,8 +99,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(login);
                 return true;
             case R.id.account_details:
-                Intent accountDetails = new Intent(getApplicationContext(), AccountDetails.class);
-                startActivity(accountDetails);
+                if (testUser == null) {
+                    Toast.makeText(getApplicationContext(), "No User Found", Toast.LENGTH_LONG).show();
+                    Intent Login = new Intent(getApplicationContext(), Login.class);
+                    startActivity(Login);
+                } else {
+                    Intent accountDetails = new Intent(getApplicationContext(), AccountDetails.class);
+                    startActivity(accountDetails);
+                }
+                return true;
         }
         return false;
     }
