@@ -67,6 +67,10 @@ public class Help extends AppCompatActivity implements AdapterView.OnItemSelecte
             case "Buzzwords":
                 help.setText(R.string.buzzwords_help);
                 break;
+
+            case "Review":
+                help.setText(R.string.review);
+                break;
         }
     }
 
