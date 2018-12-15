@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.sql.Array;
@@ -428,7 +429,7 @@ public class RideBoard extends AppCompatActivity {
                             dialog.dismiss();
                         } else {
                             currentRide.setStart(true);
-                            button1.setText("End Ride");
+                            button1.setText(getString(R.string.endride));
                             new RemoteConnection().startRide(ride.getRideId());
                             dialog.dismiss();
                         }
@@ -445,6 +446,19 @@ public class RideBoard extends AppCompatActivity {
         dialog2.setContentView(R.layout.review_layout);
 
         final EditText rating = (EditText) findViewById(R.id.rating);
+
+        final Button button3 = dialog2.findViewById(R.id.report);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MainActivity.testUser.getUserId() == currentRide.getDriverUserID()) {
+                    new RemoteConnection().report(currentRide.getPassengerUserID());
+                } else {
+                    new RemoteConnection().report(currentRide.getDriverUserID());
+                }
+                Toast.makeText(getApplicationContext(), "User reported", Toast.LENGTH_LONG).show();
+            }
+        });
 
         final Button button2 = dialog2.findViewById(R.id.review_confirm);
         button2.setOnClickListener(new View.OnClickListener() {

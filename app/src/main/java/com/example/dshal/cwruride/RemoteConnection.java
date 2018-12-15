@@ -133,6 +133,11 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
                     query = "SELECT year, make, model, plate, license FROM Users WHERE user_id = " + params[1];
                     rs = stmt.executeQuery(query);
                     return rs;
+
+                case "report":
+                    query = "UPDATE Users SET report = report + 1 WHERE user_id = " + params[1];
+                    stmt.executeUpdate(query);
+                    return null;
             }
         } catch (SQLException e) {
             System.out.println("SQL exception");
@@ -314,6 +319,18 @@ public class RemoteConnection extends AsyncTask<String, String, ResultSet> {
             Log.e("ExecutionException", ee.getMessage());
         }
         return null;
+    }
+
+    public void report(int userID) {
+        try {
+            new RemoteConnection().execute("report", Integer.toString(userID)).get();
+        }
+        catch (InterruptedException ie) {
+            Log.e("InterruptedException", ie.getMessage());
+        }
+        catch (ExecutionException ee) {
+            Log.e("ExecutionException", ee.getMessage());
+        }
     }
 
 }
