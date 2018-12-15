@@ -60,8 +60,9 @@
         android:id="@+id/Buzzword5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:text="Adelbert Armory: 2128 Adelbert Rd, Cleveland, OH 44106"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="268dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Buzzword4" />
 
 </android.support.constraint.ConstraintLayout>
